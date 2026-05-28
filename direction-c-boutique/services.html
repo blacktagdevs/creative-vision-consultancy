@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Creative Vision Consultancy · Direction C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bone: #F4EFE6;
+    --bone-deep: #ECE5D6;
+    --sage: #7A8471;
+    --sage-deep: #5C6356;
+    --brass: #B08D57;
+    --brass-deep: #8A6D40;
+    --charcoal: #2A2A28;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bone);
+    color: var(--charcoal);
+    line-height: 1.65;
+  }
+
+  /* Side nav */
+  .side-nav {
+    position: fixed; top: 0; left: 0;
+    width: 80px; height: 100vh;
+    background: var(--bone);
+    border-right: 1px solid rgba(42, 42, 40, 0.08);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between;
+    padding: 32px 0;
+    z-index: 100;
+  }
+  .side-nav .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--charcoal);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.2em;
+    transform: rotate(180deg);
+  }
+  .side-nav .brand span { color: var(--brass); }
+  .side-nav .ig {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    color: var(--sage-deep);
+    text-decoration: none;
+  }
+
+  .top-bar {
+    position: fixed; top: 0; left: 80px; right: 0;
+    padding: 28px 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 99;
+    background: rgba(244, 239, 230, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(42, 42, 40, 0.06);
+  }
+  .top-bar .greet {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--sage-deep);
+  }
+  .top-bar ul {
+    display: flex; gap: 36px; list-style: none;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  .top-bar a { color: var(--charcoal); text-decoration: none; }
+  .top-bar a:hover { color: var(--brass); }
+
+  .main { margin-left: 80px; }
+
+  /* Page header */
+  .page-header {
+    padding: 200px 56px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .page-header .eyebrow {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--brass-deep);
+    font-weight: 600;
+    margin-bottom: 32px;
+  }
+  .page-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(80px, 11vw, 200px);
+    line-height: 0.9;
+    color: var(--charcoal);
+    letter-spacing: -0.025em;
+  }
+  .page-header h1 em { font-style: italic; color: var(--brass); }
+  .page-header p {
+    color: var(--sage-deep);
+    font-size: 17px;
+    line-height: 1.8;
+    max-width: 50ch;
+  }
+  .page-header p::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    float: left;
+    line-height: 0.85;
+    margin: 6px 12px 0 0;
+    color: var(--brass);
+  }
+
+  /* Index strip */
+  .index-strip {
+    border-top: 1px solid rgba(42, 42, 40, 0.12);
+    border-bottom: 1px solid rgba(42, 42, 40, 0.12);
+    margin: 60px 56px;
+    padding: 28px 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 24px;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .index-strip a {
+    color: var(--charcoal);
+    text-decoration: none;
+    border-left: 1px solid rgba(42, 42, 40, 0.15);
+    padding-left: 16px;
+    transition: color 0.3s;
+  }
+  .index-strip a:first-child { border-left: none; padding-left: 0; }
+  .index-strip a:hover { color: var(--brass); }
+  .index-strip a .num {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--brass-deep);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  /* Category */
+  .category {
+    padding: 140px 56px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .category .label {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--brass-deep); font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .category h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 7vw, 100px);
+    line-height: 0.95;
+    color: var(--charcoal);
+    letter-spacing: -0.02em;
+  }
+  .category h2 em { font-style: italic; color: var(--brass); }
+  .category p {
+    color: var(--sage-deep);
+    font-size: 16px;
+    max-width: 50ch;
+  }
+
+  /* Tier (editorial spread) */
+  .tier {
+    padding: 60px 56px 100px;
+    border-bottom: 1px solid rgba(42, 42, 40, 0.08);
+  }
+  .tier-top {
+    display: grid;
+    grid-template-columns: 120px 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+    align-items: start;
+  }
+  .tier-top .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 96px;
+    line-height: 0.85;
+    color: var(--brass);
+    letter-spacing: -0.04em;
+  }
+  .tier-top h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1;
+    color: var(--charcoal);
+    letter-spacing: -0.015em;
+  }
+  .tier-top h3 em { font-style: italic; color: var(--brass); }
+  .tier-top .tag {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--sage-deep);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .tier-top .price {
+    text-align: right;
+    border-left: 1px solid rgba(42, 42, 40, 0.15);
+    padding-left: 60px;
+  }
+  .tier-top .price .label-sm {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--sage-deep); margin-bottom: 8px;
+  }
+  .tier-top .price .amount {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 56px;
+    color: var(--charcoal);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .tier-top .price .amount em { font-style: italic; color: var(--brass); }
+  .tier-top .price .note {
+    font-size: 12px;
+    color: var(--sage-deep);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  .tier-body {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .tier-body .img-side {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .tier-body .img-side img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .tier-body .text-side {
+    padding-top: 12px;
+  }
+  .tier-body p {
+    font-size: 16px;
+    color: var(--sage-deep);
+    line-height: 1.85;
+    margin-bottom: 32px;
+    max-width: 56ch;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 18px 36px;
+    background: var(--charcoal);
+    color: var(--bone);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .btn:hover { background: var(--brass); }
+
+  /* Consulting list */
+  .consult-list {
+    list-style: none;
+    margin: 24px 0 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 32px;
+  }
+  .consult-list li {
+    font-size: 14px;
+    color: var(--charcoal);
+    padding: 12px 0;
+    border-top: 1px solid rgba(42, 42, 40, 0.1);
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .consult-list li::before {
+    content: '—';
+    color: var(--brass);
+    font-weight: 700;
+  }
+
+  /* CTA */
+  .cta-band {
+    background: var(--charcoal);
+    color: var(--bone);
+    padding: 200px 56px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+  .cta-band::before {
+    content: 'inquire';
+    position: absolute;
+    bottom: -60px; right: -20px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 320px;
+    color: rgba(176, 141, 87, 0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .cta-band .inner {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+  }
+  .cta-band .label {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 32px;
+    font-weight: 600;
+  }
+  .cta-band h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 0.95;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+  .cta-band h2 em { font-style: italic; color: var(--brass); }
+  .cta-band p {
+    color: rgba(244, 239, 230, 0.7);
+    margin-bottom: 48px;
+    max-width: 56ch;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  .cta-band a {
+    display: inline-block;
+    padding: 18px 40px;
+    background: var(--brass);
+    color: var(--charcoal);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    font-weight: 700;
+    transition: all 0.3s;
+  }
+  .cta-band a:hover { background: var(--bone); }
+
+  footer {
+    background: var(--bone);
+    padding: 80px 56px 40px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    border-top: 1px solid rgba(42, 42, 40, 0.1);
+    font-size: 14px;
+    color: var(--sage-deep);
+  }
+  footer .brand-wrap .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 28px;
+    color: var(--charcoal);
+  }
+  footer .brand-wrap .brand em { color: var(--brass); }
+  footer .col h4 {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--charcoal); font-weight: 700;
+    margin-bottom: 16px;
+  }
+  footer .col { display: flex; flex-direction: column; gap: 10px; }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { color: var(--brass); }
+
+  .draft-banner {
+    position: fixed; bottom: 16px; right: 16px;
+    background: var(--charcoal); color: var(--brass);
+    padding: 10px 16px; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; z-index: 200;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<aside class="side-nav">
+  <div class="brand">CVC<span>.</span></div>
+  <a class="ig" href="#">Instagram</a>
+</aside>
+
+<header class="top-bar">
+  <div class="greet">Studio · est. 2018</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Inquire</a></li>
+  </ul>
+</header>
+
+<div class="main">
+
+  <section class="page-header">
+    <div>
+      <div class="eyebrow">— Our Practice</div>
+      <h1>Services &amp; <em>investment</em>.</h1>
+    </div>
+    <p>Thoughtfully structured packages for weddings, social events, and corporate gatherings. Pricing reflects starting investment — every scope is tailored to the specifics of each celebration. Pricing for events varies with guest count, vendor list, and complexity.</p>
+  </section>
+
+  <nav class="index-strip">
+    <a href="#wedding-1"><span class="num">01</span>Full Planning</a>
+    <a href="#wedding-2"><span class="num">02</span>Partial Planning</a>
+    <a href="#wedding-3"><span class="num">03</span>Month-of</a>
+    <a href="#event-1"><span class="num">04</span>Full Vision</a>
+    <a href="#event-2"><span class="num">05</span>Executive</a>
+    <a href="#event-3"><span class="num">06</span>Consulting</a>
+  </nav>
+
+  <!-- WEDDINGS -->
+  <section class="category">
+    <div>
+      <div class="label">— Weddings</div>
+      <h2>For the day you've <em>imagined</em>.</h2>
+    </div>
+    <p>Three levels of support to meet you where you are in the planning journey — from start-to-finish stewardship to focused day-of execution.</p>
+  </section>
+
+  <article class="tier" id="wedding-1">
+    <div class="tier-top">
+      <div class="num">01</div>
+      <div>
+        <div class="tag">— Weddings · No. 01</div>
+        <h3>Full <em>Planning</em></h3>
+      </div>
+      <div class="price">
+        <div class="label-sm">Starting At</div>
+        <div class="amount">$6,000<em>+</em></div>
+        <div class="note">tailored to scope</div>
+      </div>
+    </div>
+    <div class="tier-body">
+      <div class="img-side"><!-- IMAGE: full planning --><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=80" alt=""></div>
+      <div class="text-side">
+        <p>Full-service planning is for clients who want comprehensive support from start to finish with every detail thoughtfully managed. From vision development and vendor coordination to structured timelines and logistics, we guide the entire planning process with precision and care.</p>
+        <p>We prioritize both client and guest experience, ensuring each event feels seamless, personal, and well-executed. With proactive communication and calm leadership on event day, we bring your vision to life while you enjoy every moment.</p>
+        <a class="btn" href="#">Inquire Here</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="tier" id="wedding-2">
+    <div class="tier-top">
+      <div class="num">02</div>
+      <div>
+        <div class="tag">— Weddings · No. 02</div>
+        <h3>Partial <em>Planning</em></h3>
+      </div>
+      <div class="price">
+        <div class="label-sm">Starting At</div>
+        <div class="amount">$4,500<em>+</em></div>
+        <div class="note">tailored to scope</div>
+      </div>
+    </div>
+    <div class="tier-body">
+      <div class="img-side"><!-- IMAGE: partial planning --><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=1400&q=80" alt=""></div>
+      <div class="text-side">
+        <p>Partial planning is ideal for clients who have begun the planning process and need professional guidance to refine details and bring everything together. We step in to provide strategic support, vendor coordination, timeline development, and design clarity while ensuring nothing is overlooked.</p>
+        <p>With a focus on organization, communication, and seamless execution, we help transform your plans into a well-curated event experience.</p>
+        <a class="btn" href="#">Inquire Here</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="tier" id="wedding-3">
+    <div class="tier-top">
+      <div class="num">03</div>
+      <div>
+        <div class="tag">— Weddings · No. 03</div>
+        <h3>Month-of <em>Coordination</em></h3>
+      </div>
+      <div class="price">
+        <div class="label-sm">Starting At</div>
+        <div class="amount">$2,000<em>+</em></div>
+        <div class="note">varies with scope</div>
+      </div>
+    </div>
+    <div class="tier-body">
+      <div class="img-side"><!-- IMAGE: month-of --><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&q=80" alt=""></div>
+      <div class="text-side">
+        <p>Month-of coordination is designed for clients who have planned their event and need professional oversight to ensure everything runs smoothly. We take over final logistics, confirm details with vendors, create a detailed timeline, and manage communication leading up to the event.</p>
+        <p>On event day, we provide calm leadership, real-time problem-solving, and efficient execution so you can relax and fully enjoy the experience. Pricing may vary based on guest count, number of vendors, and event scope.</p>
+        <a class="btn" href="#">Inquire Here</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- EVENTS -->
+  <section class="category">
+    <div>
+      <div class="label">— Events</div>
+      <h2>Beyond the <em>aisle</em>.</h2>
+    </div>
+    <p>Birthdays, brand activations, milestones, and corporate gatherings — produced with the same care, clarity, and on-the-ground precision.</p>
+  </section>
+
+  <article class="tier" id="event-1">
+    <div class="tier-top">
+      <div class="num">04</div>
+      <div>
+        <div class="tag">— Events · No. 01</div>
+        <h3>Full Vision <em>Planning</em></h3>
+      </div>
+      <div class="price">
+        <div class="label-sm">Investment</div>
+        <div class="amount" style="font-size: 28px; padding-top: 14px;"><em>tailored</em></div>
+      </div>
+    </div>
+    <div class="tier-body">
+      <div class="img-side"><!-- IMAGE: full vision --><img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=80" alt=""></div>
+      <div class="text-side">
+        <p>Planning and coordination for birthday celebrations, brand events, and corporate gatherings. Services include logistics, vendor management, timelines, and on-site execution — built around the energy and intention of your celebration.</p>
+        <a class="btn" href="#">Inquire Here</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="tier" id="event-2">
+    <div class="tier-top">
+      <div class="num">05</div>
+      <div>
+        <div class="tag">— Events · No. 02</div>
+        <h3>Executive <em>Planning</em></h3>
+      </div>
+      <div class="price">
+        <div class="label-sm">Investment</div>
+        <div class="amount" style="font-size: 28px; padding-top: 14px;"><em>tailored</em></div>
+      </div>
+    </div>
+    <div class="tier-body">
+      <div class="img-side"><!-- IMAGE: executive --><img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=1400&q=80" alt=""></div>
+      <div class="text-side">
+        <p>Day-of event coordination focused on on-site management and seamless execution. From overseeing vendor arrivals and setup to managing the flow of the event and guest experience, we ensure everything runs according to plan.</p>
+        <p>We act as the point of contact throughout the event, making quick adjustments as needed and maintaining a smooth, organized atmosphere so hosts can be fully present and enjoy their celebration.</p>
+        <a class="btn" href="#">Inquire Here</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="tier" id="event-3">
+    <div class="tier-top">
+      <div class="num">06</div>
+      <div>
+        <div class="tag">— Events · No. 03</div>
+        <h3><em>Consulting</em></h3>
+      </div>
+      <div class="price">
+        <div class="label-sm">Per Session</div>
+        <div class="amount" style="font-size: 28px; padding-top: 14px;"><em>by inquiry</em></div>
+      </div>
+    </div>
+    <div class="tier-body">
+      <div class="img-side"><!-- IMAGE: consulting --><img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1400&q=80" alt=""></div>
+      <div class="text-side">
+        <p>Ideal for clients who want professional guidance, clarity, and direction without full planning services. These one-on-one sessions are designed to help you move forward with confidence — whether you're feeling stuck, overwhelmed, or simply want expert insight.</p>
+        <ul class="consult-list">
+          <li>Event vision and design direction</li>
+          <li>Timeline guidance and flow</li>
+          <li>Vendor strategy and recommendations</li>
+          <li>Budget prioritization</li>
+          <li>Cultural or logistical considerations</li>
+          <li>Problem-solving and planning clarity</li>
+        </ul>
+        <p style="font-style: italic; color: var(--brass-deep); font-size: 14px;">Available virtually or in person, tailored to your specific needs.</p>
+        <a class="btn" href="#" style="margin-top: 16px;">Inquire Here</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="inner">
+      <div class="label">— Next Step</div>
+      <h2>Tell us about the day you're <em>imagining</em>.</h2>
+      <p>We intentionally take on a limited number of events to ensure exceptional service. Submitting an inquiry does not guarantee availability. We look forward to creating something unforgettable with you.</p>
+      <a href="#">Begin Your Inquiry</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="brand-wrap">
+      <div class="brand">Creative Vision <em>Consultancy</em></div>
+      <p style="margin-top: 14px; font-size: 13px; line-height: 1.7;">Wedding &amp; event studio. Based in Atlanta. Serving clients nationwide.</p>
+    </div>
+    <div class="col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="#">About</a>
+      <a href="services.html">Services</a>
+    </div>
+    <div class="col">
+      <h4>Connect</h4>
+      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+      <a href="#">Inquire</a>
+    </div>
+    <div class="col">
+      <h4>Studio</h4>
+      <span>Atlanta, GA</span>
+      <span>hello@cvc.com</span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="draft-banner">Direction C · Modern Boutique · Draft</div>
+
+</body>
+</html>

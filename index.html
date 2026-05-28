@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVC Website Refresh — Draft Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #fafafa;
+    color: #1a1a1a;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1280px; margin: 0 auto; padding: 80px 56px; }
+  .display { font-family: 'Fraunces', serif; }
+
+  header.intro-head {
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .intro-head .container { padding: 100px 56px 80px; }
+  .intro-head .eyebrow {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: #8a8a8a; margin-bottom: 24px;
+  }
+  .intro-head h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+  .intro-head h1 em { font-style: italic; color: #B08D57; }
+  .intro-head p {
+    font-size: 17px;
+    color: #555;
+    line-height: 1.75;
+    max-width: 70ch;
+  }
+  .intro-head .meta {
+    margin-top: 40px;
+    display: flex; gap: 40px;
+    font-size: 13px; color: #888;
+  }
+  .intro-head .meta strong { color: #1a1a1a; }
+
+  .directions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .card {
+    background: white;
+    padding: 0;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.1);
+  }
+  .card .swatch {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+  .swatch.a {
+    background: linear-gradient(135deg, #FAF7F2 0%, #FAF7F2 60%, #C9A99B 100%);
+    color: #1A1A1A;
+  }
+  .swatch.b {
+    background: linear-gradient(135deg, #F8F1E9 0%, #E8A87C 70%, #D97757 100%);
+    color: #3D2B3D;
+  }
+  .swatch.c {
+    background: linear-gradient(135deg, #F4EFE6 0%, #B08D57 60%, #2A2A28 100%);
+    color: #F4EFE6;
+  }
+  .card .body { padding: 32px; }
+  .card .label {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: #B08D57; font-weight: 600; margin-bottom: 12px;
+  }
+  .card h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 28px;
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+  .card h2 em { font-style: italic; color: #B08D57; }
+  .card p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .card .meta-row {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 24px;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .card .meta-row span { display: block; }
+  .card .meta-row strong { color: #1a1a1a; font-weight: 600; }
+  .links { display: flex; gap: 12px; }
+  .links a {
+    flex: 1;
+    text-align: center;
+    padding: 12px 16px;
+    background: #1a1a1a;
+    color: white;
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: background 0.3s;
+  }
+  .links a.outline {
+    background: transparent;
+    color: #1a1a1a;
+    border: 1px solid #1a1a1a;
+  }
+  .links a:hover { background: #B08D57; color: white; border-color: #B08D57; }
+
+  .notes {
+    margin-top: 80px;
+    padding: 48px;
+    background: white;
+    border-radius: 2px;
+    border-left: 3px solid #B08D57;
+  }
+  .notes h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .notes ul {
+    list-style: none;
+    padding: 0;
+  }
+  .notes li {
+    padding: 10px 0;
+    font-size: 14.5px;
+    color: #444;
+    border-bottom: 1px solid #f0f0f0;
+    padding-left: 24px;
+    position: relative;
+  }
+  .notes li:last-child { border-bottom: none; }
+  .notes li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #B08D57;
+    font-weight: 700;
+  }
+  .notes li strong { color: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<header class="intro-head">
+  <div class="container">
+    <div class="eyebrow">— Creative Vision Consultancy</div>
+    <h1>Website Refresh · <em>Draft Directions</em></h1>
+    <p>Three distinct design directions for the CVC site refresh. Each draft covers a Home page and a Services page using the same client-provided copy, so the comparison is purely about <strong>design language</strong> — palette, typography, mood, layout — not content.</p>
+    <div class="meta">
+      <div><strong>Drafted</strong><br>May 2026</div>
+      <div><strong>Pages per direction</strong><br>Home + Services</div>
+      <div><strong>Status</strong><br>For client review</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="directions">
+
+    <!-- A -->
+    <article class="card">
+      <div class="swatch a">A</div>
+      <div class="body">
+        <div class="label">Direction A</div>
+        <h2>Editorial <em>Luxe</em></h2>
+        <p>Restrained, photo-led, Vogue-meets-Architectural-Digest. Closest to elevatedexperience.co and lesloevents.com. The "safe modern" pick — timeless, expensive, lets photography carry the brand.</p>
+        <div class="meta-row">
+          <span><strong>Palette</strong><br>Ivory · Charcoal · Dusty Rose</span>
+          <span><strong>Type</strong><br>Cormorant Garamond + Inter</span>
+        </div>
+        <div class="links">
+          <a href="direction-a-editorial/index.html">Home</a>
+          <a href="direction-a-editorial/services.html" class="outline">Services</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- B -->
+    <article class="card">
+      <div class="swatch b">B</div>
+      <div class="body">
+        <div class="label">Direction B</div>
+        <h2>Warm <em>Romantic</em></h2>
+        <p>Honors the peach + gold cues from the refresh brief itself. Most overtly wedding-coded — script accents, layered photo collages, gold dividers. Reads warmer and more emotional than A.</p>
+        <div class="meta-row">
+          <span><strong>Palette</strong><br>Cream · Coral · Gold · Plum</span>
+          <span><strong>Type</strong><br>Playfair Display + Lora + Pinyon Script</span>
+        </div>
+        <div class="links">
+          <a href="direction-b-romantic/index.html">Home</a>
+          <a href="direction-b-romantic/services.html" class="outline">Services</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- C -->
+    <article class="card">
+      <div class="swatch c">C</div>
+      <div class="body">
+        <div class="label">Direction C</div>
+        <h2>Modern <em>Boutique</em></h2>
+        <p>Boutique editorial — oversized display type crossing image boundaries, sticky vertical brand mark, asymmetric grids. The "design-forward" pick. Closest to irenetyndale.com but more architectural.</p>
+        <div class="meta-row">
+          <span><strong>Palette</strong><br>Bone · Sage · Brass · Charcoal</span>
+          <span><strong>Type</strong><br>Fraunces + Manrope</span>
+        </div>
+        <div class="links">
+          <a href="direction-c-boutique/index.html">Home</a>
+          <a href="direction-c-boutique/services.html" class="outline">Services</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <section class="notes">
+    <h3>Notes for the client</h3>
+    <ul>
+      <li><strong>All three use placeholder imagery</strong> (Unsplash) — the look will shift meaningfully once real CVC photography is in. Image swap is mechanical from there.</li>
+      <li><strong>Copy is identical across all three</strong> — pulled directly from your refresh brief. Comparing apples to apples on design only.</li>
+      <li><strong>Desktop-first for this round.</strong> Mobile/tablet polish comes after a direction is locked.</li>
+      <li><strong>Only Home + Services are mocked.</strong> About, Gallery, and Inquiry get built out in the chosen direction once you pick one.</li>
+      <li><strong>Pick one direction</strong> (or describe a hybrid — e.g. "B's palette with A's layout") and we'll rebuild it properly in Next.js with real photos, the inquiry form wired up, and full responsive treatment.</li>
+    </ul>
+  </section>
+
+</main>
+
+</body>
+</html>

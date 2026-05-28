@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Creative Vision Consultancy · Direction B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F8F1E9;
+    --cream-deep: #F1E8DB;
+    --peach: #E8A87C;
+    --coral: #D97757;
+    --gold: #C9A961;
+    --gold-deep: #A8893F;
+    --plum: #3D2B3D;
+    --plum-soft: #5C4658;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Lora', serif;
+    background: var(--cream);
+    color: var(--plum);
+    line-height: 1.7;
+  }
+
+  nav {
+    position: sticky; top: 0;
+    padding: 22px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(248, 241, 233, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(201, 169, 97, 0.2);
+    z-index: 100;
+  }
+  nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--plum);
+  }
+  nav .logo span.amp { color: var(--coral); margin: 0 4px; }
+  nav ul {
+    display: flex; gap: 40px; list-style: none;
+    font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  nav a { color: var(--plum); text-decoration: none; }
+  nav a:hover { color: var(--coral); }
+
+  /* Page header */
+  .page-header {
+    padding: 140px 60px 80px;
+    text-align: center;
+    background: var(--cream-deep);
+    position: relative;
+  }
+  .page-header .script {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 58px;
+    color: var(--coral);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(56px, 7vw, 96px);
+    line-height: 1;
+    color: var(--plum);
+    margin-bottom: 28px;
+  }
+  .page-header h1 em { color: var(--coral); font-style: italic; }
+  .page-header p {
+    max-width: 56ch;
+    margin: 0 auto;
+    font-size: 17px;
+    color: var(--plum-soft);
+    line-height: 1.8;
+    font-style: italic;
+  }
+  .page-header::after {
+    content: '';
+    position: absolute;
+    left: 50%; bottom: 40px; transform: translateX(-50%);
+    width: 80px; height: 1px;
+    background: var(--gold);
+  }
+
+  /* Category */
+  .category {
+    text-align: center;
+    padding: 120px 60px 40px;
+  }
+  .category .script-label {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 64px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .category h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(40px, 5vw, 68px);
+    color: var(--plum);
+    margin-bottom: 16px;
+  }
+  .category p {
+    color: var(--plum-soft);
+    max-width: 52ch;
+    margin: 0 auto;
+    font-size: 16px;
+  }
+
+  /* Tier card */
+  .tiers {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 60px 80px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .tier-card {
+    background: white;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(61, 43, 61, 0.07);
+    border-radius: 2px;
+  }
+  .tier-card:nth-child(even) .tier-card-img { order: 2; }
+  .tier-card-img {
+    aspect-ratio: 4 / 5;
+    min-height: 420px;
+  }
+  .tier-card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .tier-card-content {
+    padding: 56px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .tier-card-content .num {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 36px;
+    color: var(--coral);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .tier-card-content .tag {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  .tier-card-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(34px, 4vw, 48px);
+    color: var(--plum);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .tier-card-content p {
+    color: var(--plum-soft);
+    font-size: 15.5px;
+    line-height: 1.85;
+    margin-bottom: 28px;
+  }
+  .price-row {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 18px 0;
+    margin-bottom: 24px;
+    border-top: 1px solid rgba(201, 169, 97, 0.4);
+    border-bottom: 1px solid rgba(201, 169, 97, 0.4);
+  }
+  .price-row .price-label {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold-deep); font-weight: 500;
+  }
+  .price-row .price-amount {
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+    font-size: 32px;
+    color: var(--coral);
+  }
+  .btn-inquire {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--coral);
+    color: white;
+    text-decoration: none;
+    font-family: 'Lora', serif;
+    font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase;
+    font-weight: 500;
+    align-self: flex-start;
+    transition: all 0.3s;
+    box-shadow: 0 4px 14px rgba(217, 119, 87, 0.25);
+  }
+  .btn-inquire:hover {
+    background: var(--plum);
+    transform: translateY(-2px);
+  }
+
+  /* Consulting list */
+  .consult-list {
+    list-style: none;
+    margin: 24px 0 32px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 32px;
+  }
+  .consult-list li {
+    font-size: 14.5px;
+    color: var(--plum);
+    padding-left: 18px;
+    position: relative;
+    font-style: italic;
+  }
+  .consult-list li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 11px;
+    top: 4px;
+  }
+
+  /* Divider */
+  .ornament-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 80px 0 40px;
+  }
+  .ornament-divider .line {
+    flex: 0 0 80px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .ornament-divider .mark {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 32px;
+    color: var(--gold-deep);
+    line-height: 1;
+  }
+
+  /* CTA */
+  .cta-band {
+    background: var(--plum);
+    color: var(--cream);
+    text-align: center;
+    padding: 160px 60px;
+    margin-top: 60px;
+  }
+  .cta-band .mark {
+    font-family: 'Pinyon Script', cursive;
+    font-size: 52px;
+    color: var(--peach);
+    margin-bottom: 12px;
+  }
+  .cta-band h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.1;
+    margin-bottom: 24px;
+    max-width: 20ch;
+    margin-left: auto; margin-right: auto;
+  }
+  .cta-band p {
+    max-width: 52ch; margin: 0 auto 40px;
+    font-style: italic;
+    color: rgba(248, 241, 233, 0.8);
+    font-size: 15px; line-height: 1.7;
+  }
+  .cta-band a {
+    display: inline-block;
+    padding: 18px 44px;
+    background: var(--coral);
+    color: white;
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s;
+    box-shadow: 0 4px 18px rgba(217, 119, 87, 0.4);
+  }
+  .cta-band a:hover { background: var(--peach); transform: translateY(-2px); }
+
+  footer {
+    background: var(--cream-deep);
+    padding: 70px 60px 40px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    color: var(--plum-soft);
+    font-size: 14px;
+  }
+  footer .brand {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--plum);
+  }
+  footer .col h4 {
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  footer .col { display: flex; flex-direction: column; gap: 10px; }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { color: var(--coral); }
+
+  .draft-banner {
+    position: fixed; bottom: 16px; right: 16px;
+    background: var(--plum); color: var(--cream);
+    padding: 10px 16px; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; z-index: 200;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Creative Vision<span class="amp">&amp;</span>Consultancy</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="page-header">
+  <div class="script">Our</div>
+  <h1>Services</h1>
+  <p>Thoughtfully structured packages for weddings, social, and corporate events — each tailored to the energy and intention of your celebration.</p>
+</section>
+
+<!-- WEDDINGS -->
+<section class="category">
+  <div class="script-label">Weddings</div>
+  <h2>For the day you've imagined.</h2>
+  <p>Three levels of support to meet you where you are in your planning journey.</p>
+</section>
+
+<div class="tiers">
+
+  <article class="tier-card">
+    <div class="tier-card-img"><!-- IMAGE: full planning --><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=80" alt=""></div>
+    <div class="tier-card-content">
+      <div class="num">No. 1</div>
+      <div class="tag">— Full Planning —</div>
+      <h3>Full Planning</h3>
+      <p>Full-service planning is for clients who want comprehensive support from start to finish with every detail thoughtfully managed. From vision development and vendor coordination to structured timelines and logistics, we guide the entire planning process with precision and care. We prioritize both client and guest experience, ensuring each event feels seamless, personal, and well-executed.</p>
+      <div class="price-row">
+        <span class="price-label">Starting At</span>
+        <span class="price-amount">$6,000</span>
+      </div>
+      <a class="btn-inquire" href="#">Inquire Here</a>
+    </div>
+  </article>
+
+  <article class="tier-card">
+    <div class="tier-card-img"><!-- IMAGE: partial planning --><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=1400&q=80" alt=""></div>
+    <div class="tier-card-content">
+      <div class="num">No. 2</div>
+      <div class="tag">— Partial Planning —</div>
+      <h3>Partial Planning</h3>
+      <p>Partial planning is ideal for clients who have begun the planning process and need professional guidance to refine details and bring everything together. We step in to provide strategic support, vendor coordination, timeline development, and design clarity while ensuring nothing is overlooked. With a focus on organization, communication, and seamless execution, we help transform your plans into a well-curated event experience.</p>
+      <div class="price-row">
+        <span class="price-label">Starting At</span>
+        <span class="price-amount">$4,500</span>
+      </div>
+      <a class="btn-inquire" href="#">Inquire Here</a>
+    </div>
+  </article>
+
+  <article class="tier-card">
+    <div class="tier-card-img"><!-- IMAGE: month-of --><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&q=80" alt=""></div>
+    <div class="tier-card-content">
+      <div class="num">No. 3</div>
+      <div class="tag">— Month-of Coordination —</div>
+      <h3>Month-of Coordination</h3>
+      <p>Month-of coordination is designed for clients who have planned their event and need professional oversight to ensure everything runs smoothly. We take over final logistics, confirm details with vendors, create a detailed timeline, and manage communication leading up to the event. On event day, we provide calm leadership, real-time problem-solving, and efficient execution so you can relax and fully enjoy the experience.</p>
+      <div class="price-row">
+        <span class="price-label">Starting At</span>
+        <span class="price-amount">$2,000</span>
+      </div>
+      <a class="btn-inquire" href="#">Inquire Here</a>
+    </div>
+  </article>
+
+</div>
+
+<div class="ornament-divider">
+  <div class="line"></div>
+  <div class="mark">cvc</div>
+  <div class="line"></div>
+</div>
+
+<!-- EVENTS -->
+<section class="category">
+  <div class="script-label">Events</div>
+  <h2>Beyond the aisle.</h2>
+  <p>Birthdays, brand events, milestones, and corporate gatherings — produced with the same care and clarity.</p>
+</section>
+
+<div class="tiers">
+
+  <article class="tier-card">
+    <div class="tier-card-img"><!-- IMAGE: full vision --><img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=80" alt=""></div>
+    <div class="tier-card-content">
+      <div class="num">No. 1</div>
+      <div class="tag">— Events —</div>
+      <h3>Full Vision Planning</h3>
+      <p>Planning and coordination for birthday celebrations, brand events, and corporate gatherings. Services include logistics, vendor management, timelines, and on-site execution — built around the energy and intention of your celebration.</p>
+      <a class="btn-inquire" href="#">Inquire Here</a>
+    </div>
+  </article>
+
+  <article class="tier-card">
+    <div class="tier-card-img"><!-- IMAGE: executive --><img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=1400&q=80" alt=""></div>
+    <div class="tier-card-content">
+      <div class="num">No. 2</div>
+      <div class="tag">— Events —</div>
+      <h3>Executive Planning</h3>
+      <p>Day-of event coordination focused on on-site management and seamless execution. From overseeing vendor arrivals and setup to managing the flow of the event and guest experience, we ensure everything runs according to plan. We act as the point of contact throughout the event, making quick adjustments as needed and maintaining a smooth, organized atmosphere so hosts can be fully present and enjoy their celebration.</p>
+      <a class="btn-inquire" href="#">Inquire Here</a>
+    </div>
+  </article>
+
+  <article class="tier-card">
+    <div class="tier-card-img"><!-- IMAGE: consulting --><img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1400&q=80" alt=""></div>
+    <div class="tier-card-content">
+      <div class="num">No. 3</div>
+      <div class="tag">— Events —</div>
+      <h3>Consulting</h3>
+      <p>Ideal for clients who want professional guidance, clarity, and direction without full planning services. These one-on-one sessions are designed to help you move forward with confidence — whether you're feeling stuck, overwhelmed, or simply want expert insight.</p>
+      <ul class="consult-list">
+        <li>Event vision and design direction</li>
+        <li>Timeline guidance and flow</li>
+        <li>Vendor strategy and recommendations</li>
+        <li>Budget prioritization</li>
+        <li>Cultural or logistical considerations</li>
+        <li>Problem-solving and planning clarity</li>
+      </ul>
+      <p style="font-style: italic; font-size: 14px; color: var(--gold-deep); margin-bottom: 24px;">Available virtually or in person.</p>
+      <a class="btn-inquire" href="#">Inquire Here</a>
+    </div>
+  </article>
+
+</div>
+
+<!-- CTA -->
+<section class="cta-band">
+  <div class="mark">let's begin</div>
+  <h2>Tell us about the day you're imagining.</h2>
+  <p>We intentionally take on a limited number of events to ensure exceptional service. Submitting an inquiry does not guarantee availability.</p>
+  <a href="#">Begin Your Inquiry</a>
+</section>
+
+<footer>
+  <div>
+    <div class="brand">Creative Vision Consultancy</div>
+    <p style="margin-top: 14px; font-size: 13px; line-height: 1.7;">Wedding &amp; event planning based in Atlanta, serving clients nationwide.</p>
+  </div>
+  <div class="col">
+    <h4>Explore</h4>
+    <a href="index.html">Home</a>
+    <a href="#">About</a>
+    <a href="services.html">Services</a>
+  </div>
+  <div class="col">
+    <h4>Connect</h4>
+    <a href="#">Instagram</a>
+    <a href="#">Pinterest</a>
+    <a href="#">Inquire</a>
+  </div>
+  <div class="col">
+    <h4>Studio</h4>
+    <span>Atlanta, GA</span>
+    <span>hello@cvc.com</span>
+  </div>
+</footer>
+
+<div class="draft-banner">Direction B · Warm Romantic · Draft</div>
+
+</body>
+</html>

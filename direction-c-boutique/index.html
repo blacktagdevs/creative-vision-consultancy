@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Vision Consultancy — Direction C: Modern Boutique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bone: #F4EFE6;
+    --bone-deep: #ECE5D6;
+    --sage: #7A8471;
+    --sage-deep: #5C6356;
+    --brass: #B08D57;
+    --brass-deep: #8A6D40;
+    --charcoal: #2A2A28;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bone);
+    color: var(--charcoal);
+    font-weight: 400;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Fraunces', serif; }
+
+  /* Side nav */
+  .side-nav {
+    position: fixed; top: 0; left: 0;
+    width: 80px; height: 100vh;
+    background: var(--bone);
+    border-right: 1px solid rgba(42, 42, 40, 0.08);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between;
+    padding: 32px 0;
+    z-index: 100;
+  }
+  .side-nav .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--charcoal);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.2em;
+    transform: rotate(180deg);
+  }
+  .side-nav .brand span { color: var(--brass); }
+  .side-nav .ig {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    color: var(--sage-deep);
+    text-decoration: none;
+  }
+
+  /* Top bar nav */
+  .top-bar {
+    position: fixed; top: 0; left: 80px; right: 0;
+    padding: 28px 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 99;
+    background: rgba(244, 239, 230, 0.86);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(42, 42, 40, 0.06);
+  }
+  .top-bar .greet {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--sage-deep);
+  }
+  .top-bar ul {
+    display: flex; gap: 36px; list-style: none;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  .top-bar a {
+    color: var(--charcoal); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .top-bar a:hover { color: var(--brass); }
+
+  /* Main content offset */
+  .main { margin-left: 80px; }
+
+  /* Hero - oversized type crosses image */
+  .hero {
+    padding: 160px 56px 80px;
+    position: relative;
+    min-height: 100vh;
+  }
+  .hero .eyebrow {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--brass-deep); font-weight: 600;
+    margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(80px, 12vw, 220px);
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+    color: var(--charcoal);
+    margin-bottom: -60px;
+    position: relative;
+    z-index: 3;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--brass);
+    font-weight: 300;
+  }
+  .hero-figure {
+    margin-left: 26%;
+    margin-right: -56px;
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .hero-figure img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    padding-top: 80px;
+    align-items: end;
+  }
+  .hero-row .meta {
+    border-top: 1px solid rgba(42, 42, 40, 0.2);
+    padding-top: 24px;
+  }
+  .hero-row .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .hero-row .meta-grid .label {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--sage-deep); margin-bottom: 6px;
+  }
+  .hero-row .meta-grid .value {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    color: var(--charcoal);
+  }
+  .hero-row .cta-stack {
+    display: flex; gap: 16px;
+    align-items: center;
+  }
+  .btn {
+    display: inline-block;
+    padding: 18px 36px;
+    background: var(--charcoal);
+    color: var(--bone);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .btn:hover { background: var(--brass); }
+  .btn.ghost {
+    background: transparent;
+    color: var(--charcoal);
+    border-bottom: 1px solid var(--brass);
+    padding: 18px 0;
+  }
+
+  /* Intro - editorial spread */
+  .intro {
+    padding: 180px 56px 140px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 100px;
+    align-items: start;
+  }
+  .intro .left-sticky {
+    position: sticky;
+    top: 140px;
+  }
+  .intro .num {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--brass-deep);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .intro .label {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+  .intro h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 4.5vw, 64px);
+    line-height: 1.05;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+  }
+  .intro h2 em { font-style: italic; color: var(--brass); }
+  .intro p {
+    font-size: 17px;
+    color: var(--sage-deep);
+    line-height: 1.85;
+    max-width: 56ch;
+    margin-bottom: 24px;
+  }
+  .intro p:first-of-type::first-letter {
+    font-family: 'Fraunces', serif;
+    font-size: 80px;
+    font-weight: 300;
+    float: left;
+    line-height: 0.85;
+    margin: 8px 14px 0 0;
+    color: var(--brass);
+  }
+
+  /* Services band */
+  .services {
+    background: var(--bone-deep);
+    padding: 140px 56px;
+  }
+  .services-header {
+    display: flex; justify-content: space-between; align-items: end;
+    margin-bottom: 80px;
+    gap: 40px;
+  }
+  .services-header h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 0.95;
+    color: var(--charcoal);
+    letter-spacing: -0.015em;
+    flex: 1;
+  }
+  .services-header h2 em { font-style: italic; color: var(--brass); }
+  .services-header .right {
+    text-align: right;
+    max-width: 36ch;
+  }
+  .services-header .right .num {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--brass-deep);
+    margin-bottom: 12px;
+  }
+  .services-header .right p {
+    font-size: 15px;
+    color: var(--sage-deep);
+  }
+  .services-list { display: flex; flex-direction: column; }
+  .service-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1.2fr 200px;
+    gap: 40px;
+    padding: 40px 0;
+    border-top: 1px solid rgba(42, 42, 40, 0.15);
+    align-items: center;
+    transition: background 0.3s;
+  }
+  .service-row:last-child {
+    border-bottom: 1px solid rgba(42, 42, 40, 0.15);
+  }
+  .service-row:hover {
+    background: rgba(176, 141, 87, 0.04);
+  }
+  .service-row .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 38px;
+    color: var(--brass);
+    line-height: 1;
+  }
+  .service-row h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 32px;
+    color: var(--charcoal);
+    line-height: 1.05;
+  }
+  .service-row p {
+    font-size: 14.5px;
+    color: var(--sage-deep);
+    line-height: 1.7;
+  }
+  .service-row .more {
+    text-align: right;
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--charcoal); font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--brass);
+    transition: gap 0.3s;
+  }
+  .service-row .more:hover {
+    color: var(--brass);
+  }
+
+  /* Portfolio - asymmetric grid */
+  .portfolio {
+    padding: 140px 56px;
+  }
+  .portfolio-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+    align-items: end;
+  }
+  .portfolio-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 0.95;
+    color: var(--charcoal);
+    letter-spacing: -0.015em;
+  }
+  .portfolio-head h2 em { font-style: italic; color: var(--brass); }
+  .portfolio-head p {
+    color: var(--sage-deep);
+    max-width: 50ch;
+    font-size: 16px;
+  }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: 5fr 4fr 3fr;
+    gap: 24px;
+  }
+  .portfolio-grid .col { display: flex; flex-direction: column; gap: 24px; }
+  .portfolio-grid .col-2 { padding-top: 80px; }
+  .portfolio-grid .col-3 { padding-top: 160px; }
+  .portfolio-grid figure { overflow: hidden; }
+  .portfolio-grid figure img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s;
+  }
+  .portfolio-grid figure:hover img { transform: scale(1.04); }
+  .portfolio-grid .h-tall { aspect-ratio: 3/4; }
+  .portfolio-grid .h-wide { aspect-ratio: 4/3; }
+  .portfolio-grid .h-square { aspect-ratio: 1/1; }
+  .portfolio-grid figcaption {
+    margin-top: 12px;
+    display: flex; justify-content: space-between;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--sage-deep);
+  }
+  .portfolio-grid figcaption em {
+    font-style: italic; color: var(--brass-deep);
+    text-transform: none; letter-spacing: 0; font-family: 'Fraunces', serif;
+  }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 200px 56px;
+    text-align: center;
+    background: var(--bone-deep);
+  }
+  .testimonial .label {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--brass-deep); margin-bottom: 32px;
+    font-weight: 600;
+  }
+  .testimonial blockquote {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(30px, 4vw, 56px);
+    line-height: 1.25;
+    color: var(--charcoal);
+    max-width: 22ch;
+    margin: 0 auto 40px;
+    letter-spacing: -0.005em;
+  }
+  .testimonial blockquote em { font-style: italic; color: var(--brass); }
+  .testimonial cite {
+    font-style: normal;
+    font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--sage-deep);
+  }
+
+  /* CTA */
+  .cta-band {
+    background: var(--charcoal);
+    color: var(--bone);
+    padding: 180px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-band::before {
+    content: 'CVC';
+    position: absolute;
+    bottom: -80px; right: -40px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 380px;
+    color: rgba(176, 141, 87, 0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .cta-band .inner {
+    position: relative;
+    z-index: 2;
+    max-width: 740px;
+  }
+  .cta-band .label {
+    font-size: 11px; letter-spacing: 0.36em; text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 32px;
+    font-weight: 600;
+  }
+  .cta-band h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 0.95;
+    margin-bottom: 32px;
+    letter-spacing: -0.015em;
+  }
+  .cta-band h2 em { font-style: italic; color: var(--brass); }
+  .cta-band p {
+    color: rgba(244, 239, 230, 0.7);
+    margin-bottom: 48px;
+    max-width: 50ch;
+    font-size: 16px;
+  }
+  .cta-band a {
+    display: inline-block;
+    padding: 18px 40px;
+    background: var(--brass);
+    color: var(--charcoal);
+    text-decoration: none;
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    font-weight: 700;
+    transition: all 0.3s;
+  }
+  .cta-band a:hover {
+    background: var(--bone);
+  }
+
+  /* Footer */
+  footer {
+    background: var(--bone);
+    padding: 80px 56px 40px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    border-top: 1px solid rgba(42, 42, 40, 0.1);
+    font-size: 14px;
+    color: var(--sage-deep);
+  }
+  footer .brand-wrap .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 28px;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+  }
+  footer .brand-wrap .brand em { color: var(--brass); }
+  footer .col h4 {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--charcoal); font-weight: 700;
+    margin-bottom: 16px;
+  }
+  footer .col { display: flex; flex-direction: column; gap: 10px; }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { color: var(--brass); }
+
+  /* Draft banner */
+  .draft-banner {
+    position: fixed; bottom: 16px; right: 16px;
+    background: var(--charcoal); color: var(--brass);
+    padding: 10px 16px; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; z-index: 200;
+    border-radius: 2px;
+  }
+
+  /* Fade-in on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s, transform 1s;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<aside class="side-nav">
+  <div class="brand">CVC<span>.</span></div>
+  <a class="ig" href="#">Instagram</a>
+</aside>
+
+<header class="top-bar">
+  <div class="greet">Studio · est. 2018</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Inquire</a></li>
+  </ul>
+</header>
+
+<div class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">— Wedding &amp; Event Studio · Atlanta</div>
+    <h1>Vision, <em>realized</em>.</h1>
+    <div class="hero-figure">
+      <!-- IMAGE: hero -->
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=2000&q=80" alt="Wedding">
+    </div>
+    <div class="hero-row">
+      <div class="cta-stack">
+        <a class="btn" href="#">Inquire Here</a>
+        <a class="btn ghost" href="services.html">View Services</a>
+      </div>
+      <div class="meta">
+        <div class="meta-grid">
+          <div>
+            <div class="label">Tagline</div>
+            <div class="value"><em>Transforming visions into extraordinary experiences.</em></div>
+          </div>
+          <div>
+            <div class="label">Based</div>
+            <div class="value">Atlanta · Nationwide</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="left-sticky">
+      <div class="num">01 / 04</div>
+      <div class="label">— The Studio</div>
+      <h2>A full-service practice, built around <em>presence</em>.</h2>
+    </div>
+    <div>
+      <p>Creative Vision Consultancy is a full-service wedding and event management company serving weddings, social, and corporate events. From intimate gatherings to large-scale celebrations, we transform your vision into a seamless, thoughtfully curated experience that feels personal, intentional, and unforgettable.</p>
+      <p>From planning to execution, our goal is for clients to fully enjoy their day, knowing every detail has been managed and every guest is considered. Based in Atlanta and serving clients nationwide, we approach every event with care, precision, and respect for the story being told.</p>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services">
+    <div class="services-header">
+      <h2>Services <em>at a glance</em>.</h2>
+      <div class="right">
+        <div class="num">02 / 04</div>
+        <p>Six packages across weddings and events — each scoped to meet you where you are.</p>
+      </div>
+    </div>
+    <div class="services-list">
+      <div class="service-row">
+        <div class="num">01</div>
+        <h3>Full Planning</h3>
+        <p>Comprehensive, from-the-beginning support for clients who want every detail thoughtfully managed.</p>
+        <a class="more" href="services.html">Explore →</a>
+      </div>
+      <div class="service-row">
+        <div class="num">02</div>
+        <h3>Partial Planning</h3>
+        <p>Strategic support and design clarity for clients who've already begun the planning process.</p>
+        <a class="more" href="services.html">Explore →</a>
+      </div>
+      <div class="service-row">
+        <div class="num">03</div>
+        <h3>Month-of Coordination</h3>
+        <p>Calm leadership and real-time execution for clients who've planned and need professional oversight.</p>
+        <a class="more" href="services.html">Explore →</a>
+      </div>
+      <div class="service-row">
+        <div class="num">04</div>
+        <h3>Full Vision Planning</h3>
+        <p>For social events — birthdays, brand activations, corporate gatherings — built around your celebration.</p>
+        <a class="more" href="services.html">Explore →</a>
+      </div>
+      <div class="service-row">
+        <div class="num">05</div>
+        <h3>Executive Planning</h3>
+        <p>Day-of coordination focused entirely on on-site management and seamless execution.</p>
+        <a class="more" href="services.html">Explore →</a>
+      </div>
+      <div class="service-row">
+        <div class="num">06</div>
+        <h3>Consulting</h3>
+        <p>One-on-one strategy sessions for clients who want clarity and direction without full planning services.</p>
+        <a class="more" href="services.html">Explore →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section class="portfolio">
+    <div class="portfolio-head">
+      <h2>Recent <em>celebrations</em>.</h2>
+      <p>A selection of weddings, milestones, and social events — each designed to feel effortless for our clients and seamless for their guests.</p>
+    </div>
+    <div class="portfolio-grid">
+      <div class="col col-1">
+        <figure>
+          <img class="h-tall" src="https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=1400&q=80" alt="">
+          <figcaption><span>Wedding</span><em>Ogechi &amp; Richard</em></figcaption>
+        </figure>
+        <figure>
+          <img class="h-wide" src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1400&q=80" alt="">
+          <figcaption><span>Wedding</span><em>Ify &amp; Oscar</em></figcaption>
+        </figure>
+      </div>
+      <div class="col col-2">
+        <figure>
+          <img class="h-square" src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=1200&q=80" alt="">
+          <figcaption><span>Engagement</span><em>2024</em></figcaption>
+        </figure>
+        <figure>
+          <img class="h-tall" src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1400&q=80" alt="">
+          <figcaption><span>Wedding</span><em>Cynthia &amp; Curtis</em></figcaption>
+        </figure>
+      </div>
+      <div class="col col-3">
+        <figure>
+          <img class="h-tall" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&q=80" alt="">
+          <figcaption><span>Gala</span><em>Umu Igbo Unite</em></figcaption>
+        </figure>
+        <figure>
+          <img class="h-square" src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80" alt="">
+          <figcaption><span>Birthday</span><em>Phil's Party</em></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial">
+    <div class="label">— Kind Words</div>
+    <blockquote>"From the very first call, I could feel the <em>calm</em>. By event day, every detail had been considered."</blockquote>
+    <cite>Denise O. · Bride · 2024</cite>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="inner">
+      <div class="label">— Inquire</div>
+      <h2>Let's create something <em>unforgettable</em>.</h2>
+      <p>We intentionally take on a limited number of events to ensure exceptional service. Submitting an inquiry does not guarantee availability.</p>
+      <a href="#">Begin Your Inquiry</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="brand-wrap">
+      <div class="brand">Creative Vision <em>Consultancy</em></div>
+      <p style="margin-top: 14px; font-size: 13px; line-height: 1.7;">Wedding &amp; event studio. Based in Atlanta. Serving clients nationwide.</p>
+    </div>
+    <div class="col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="#">About</a>
+      <a href="services.html">Services</a>
+    </div>
+    <div class="col">
+      <h4>Connect</h4>
+      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+      <a href="#">Inquire</a>
+    </div>
+    <div class="col">
+      <h4>Studio</h4>
+      <span>Atlanta, GA</span>
+      <span>hello@cvc.com</span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="draft-banner">Direction C · Modern Boutique · Draft</div>
+
+<script>
+  // Simple reveal-on-scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in');
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

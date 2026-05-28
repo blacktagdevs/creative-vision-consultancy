@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Vision Consultancy — Direction A: Editorial Luxe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #FAF7F2;
+    --ivory-deep: #F2EDE4;
+    --charcoal: #1A1A1A;
+    --warm-gray: #8B7E72;
+    --rose: #C9A99B;
+    --rose-deep: #A8857A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--ivory);
+    color: var(--charcoal);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+  .italic { font-style: italic; }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 28px 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 100;
+    mix-blend-mode: difference;
+    color: white;
+  }
+  nav .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    letter-spacing: 0.18em;
+    font-weight: 500;
+  }
+  nav ul {
+    display: flex; gap: 44px; list-style: none;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  }
+  nav a { color: inherit; text-decoration: none; font-weight: 400; transition: opacity 0.3s; }
+  nav a:hover { opacity: 0.6; }
+
+  /* Hero */
+  .hero {
+    height: 100vh; min-height: 720px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(0.78);
+  }
+  .hero-content {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    color: white;
+    padding: 0 32px;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 92px);
+    line-height: 1.05;
+    max-width: 14ch;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em { font-weight: 300; color: var(--rose); }
+  .hero .eyebrow {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    margin-bottom: 28px; opacity: 0.85;
+  }
+  .hero .cta {
+    margin-top: 48px;
+    display: inline-block;
+    padding: 16px 38px;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: white; text-decoration: none;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    transition: all 0.4s;
+  }
+  .hero .cta:hover { background: white; color: var(--charcoal); border-color: white; }
+
+  /* Section base */
+  section { padding: 140px 56px; }
+  .container { max-width: 1320px; margin: 0 auto; }
+  .label {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--warm-gray); margin-bottom: 24px;
+  }
+  h2.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.1;
+    margin-bottom: 32px;
+    max-width: 18ch;
+  }
+
+  /* Intro — asymmetric */
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 120px;
+    align-items: center;
+    padding: 160px 56px;
+  }
+  .intro .col-text { padding-right: 40px; }
+  .intro p {
+    font-size: 17px;
+    line-height: 1.75;
+    color: #3a3a38;
+    max-width: 48ch;
+  }
+  .intro .col-image {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .intro .col-image img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  /* Services trio */
+  .services-teaser { background: var(--ivory-deep); padding: 140px 56px; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    margin-top: 80px;
+  }
+  .service-card { cursor: pointer; }
+  .service-card .img-wrap {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .service-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.8s ease;
+  }
+  .service-card:hover img { transform: scale(1.04); }
+  .service-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .service-card p {
+    color: var(--warm-gray); font-size: 14px; line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .service-card .arrow {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    border-bottom: 1px solid var(--charcoal);
+    padding-bottom: 4px;
+    color: var(--charcoal); text-decoration: none;
+  }
+
+  /* Portfolio */
+  .portfolio { padding: 140px 0 0; }
+  .portfolio .container { padding: 0 56px; }
+  .portfolio-grid {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    padding: 0 56px;
+  }
+  .portfolio-grid .item { overflow: hidden; }
+  .portfolio-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s; }
+  .portfolio-grid .item:hover img { transform: scale(1.03); }
+  .p1 { grid-column: span 7; aspect-ratio: 4/3; }
+  .p2 { grid-column: span 5; aspect-ratio: 4/5; }
+  .p3 { grid-column: span 4; aspect-ratio: 3/4; }
+  .p4 { grid-column: span 4; aspect-ratio: 3/4; }
+  .p5 { grid-column: span 4; aspect-ratio: 3/4; }
+  .p6 { grid-column: span 12; aspect-ratio: 21/9; }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 200px 56px;
+    text-align: center;
+  }
+  .testimonial .quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.4;
+    max-width: 26ch;
+    margin: 0 auto 40px;
+    color: var(--charcoal);
+  }
+  .testimonial .attribution {
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  /* CTA band */
+  .cta-band {
+    background: var(--charcoal); color: var(--ivory);
+    text-align: center;
+    padding: 140px 56px;
+  }
+  .cta-band h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 68px);
+    line-height: 1.1;
+    margin-bottom: 40px;
+    max-width: 18ch;
+    margin-left: auto; margin-right: auto;
+  }
+  .cta-band a {
+    display: inline-block;
+    padding: 18px 42px;
+    border: 1px solid var(--ivory);
+    color: var(--ivory); text-decoration: none;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    transition: all 0.4s;
+  }
+  .cta-band a:hover { background: var(--ivory); color: var(--charcoal); }
+
+  /* Footer */
+  footer {
+    background: var(--ivory);
+    padding: 80px 56px 48px;
+    display: flex; justify-content: space-between;
+    border-top: 1px solid #e7e2d8;
+    font-size: 13px; color: var(--warm-gray);
+  }
+  footer .brand {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--charcoal);
+    font-size: 22px;
+    letter-spacing: 0.18em;
+  }
+  footer .col { display: flex; flex-direction: column; gap: 10px; }
+  footer a { color: inherit; text-decoration: none; }
+  footer a:hover { color: var(--charcoal); }
+
+  /* Disclaimer banner */
+  .draft-banner {
+    position: fixed; bottom: 16px; right: 16px;
+    background: var(--charcoal); color: var(--ivory);
+    padding: 10px 16px; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; z-index: 200;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Creative Vision Consultancy</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Inquire</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- IMAGE: swap with real CVC hero photograph -->
+  <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=2000&q=80" alt="Wedding ceremony">
+  <div class="hero-content">
+    <div class="eyebrow">Atlanta · Nationwide</div>
+    <h1>Transforming visions into <em>extraordinary</em> experiences.</h1>
+    <a class="cta" href="#">Inquire Here</a>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro container">
+  <div class="col-text">
+    <div class="label">— A Full-Service Studio</div>
+    <h2 class="section-title">Curated celebrations, thoughtfully planned.</h2>
+    <p>Creative Vision Consultancy is a full-service wedding and event management company serving weddings, social, and corporate events. From intimate gatherings to large-scale celebrations, we transform your vision into a seamless, thoughtfully curated experience that feels personal, intentional, and unforgettable.</p>
+  </div>
+  <div class="col-image">
+    <!-- IMAGE: swap with portrait of Cynthia -->
+    <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1200&q=80" alt="Event detail">
+  </div>
+</section>
+
+<!-- SERVICES TEASER -->
+<section class="services-teaser">
+  <div class="container">
+    <div class="label">— Services</div>
+    <h2 class="section-title">A practice built around presence and precision.</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="img-wrap">
+          <!-- IMAGE: wedding -->
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&q=80" alt="Wedding">
+        </div>
+        <h3>Weddings</h3>
+        <p>Full planning, partial planning, and month-of coordination — from vision to execution.</p>
+        <a class="arrow" href="services.html">View Packages →</a>
+      </div>
+      <div class="service-card">
+        <div class="img-wrap">
+          <!-- IMAGE: social event -->
+          <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&q=80" alt="Social event">
+        </div>
+        <h3>Events</h3>
+        <p>Birthdays, brand activations, and corporate gatherings produced with calm leadership.</p>
+        <a class="arrow" href="services.html">View Packages →</a>
+      </div>
+      <div class="service-card">
+        <div class="img-wrap">
+          <!-- IMAGE: consulting -->
+          <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80" alt="Consulting">
+        </div>
+        <h3>Consulting</h3>
+        <p>One-on-one strategic sessions for the planner who wants direction without full service.</p>
+        <a class="arrow" href="services.html">View Packages →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio">
+  <div class="container">
+    <div class="label">— Selected Work</div>
+    <h2 class="section-title">A selection of recent celebrations.</h2>
+  </div>
+  <div class="portfolio-grid">
+    <!-- IMAGE: real portfolio photos -->
+    <div class="item p1"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=1600&q=80" alt=""></div>
+    <div class="item p2"><img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1200&q=80" alt=""></div>
+    <div class="item p3"><img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1200&q=80" alt=""></div>
+    <div class="item p4"><img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&q=80" alt=""></div>
+    <div class="item p5"><img src="https://images.unsplash.com/photo-1530023367847-a683933f4172?w=1200&q=80" alt=""></div>
+    <div class="item p6"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=2000&q=80" alt=""></div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <p class="quote">"From the very first call, I could feel the calm. By event day, every detail had been considered — and I got to actually be a guest at my own wedding."</p>
+  <div class="attribution">— Denise O., Bride</div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <h2>Let's create something unforgettable.</h2>
+  <a href="#">Begin Your Inquiry</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="brand">CVC</div>
+  <div class="col">
+    <a href="#">Instagram</a>
+    <a href="#">Pinterest</a>
+  </div>
+  <div class="col">
+    <a href="#">Services</a>
+    <a href="#">Gallery</a>
+    <a href="#">Inquire</a>
+  </div>
+  <div class="col">
+    <span>Atlanta, GA</span>
+    <span>Serving Nationwide</span>
+  </div>
+</footer>
+
+<div class="draft-banner">Direction A · Editorial Luxe · Draft</div>
+
+</body>
+</html>
