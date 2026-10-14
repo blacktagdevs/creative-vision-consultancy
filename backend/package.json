@@ -1,0 +1,27 @@
+{
+  "name": "cvc-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Creative Vision Consultancy API — services, portfolio, testimonials + admin",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "npm run migrate && node src/index.js",
+    "dev": "node --watch src/index.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "test": "NODE_ENV=test DATABASE_URL=\"${TEST_DATABASE_URL:-postgres://localhost:5432/cvc_test}\" ALLOWED_ORIGIN=http://localhost:5173 ADMIN_APP_URL=http://localhost:5173/admin ADMIN_EMAILS=admin@test.local SESSION_JWT_SECRET=test-only-secret node --test --test-concurrency=1",
+    "test:migrate": "NODE_ENV=test DATABASE_URL=\"${TEST_DATABASE_URL:-postgres://localhost:5432/cvc_test}\" ALLOWED_ORIGIN=http://localhost:5173 ADMIN_APP_URL=http://localhost:5173/admin ADMIN_EMAILS=admin@test.local SESSION_JWT_SECRET=test-only-secret node scripts/migrate.js"
+  },
+  "dependencies": {
+    "aws4fetch": "^1.0.20",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "express-rate-limit": "^7.5.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1"
+  }
+}
