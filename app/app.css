@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/fraunces/opsz-italic.css';
+@import '@fontsource-variable/inter/index.css';
+
+/* Direction A (Editorial Luxe) palette with Direction C's Fraunces headings. */
+@theme {
+  --color-ivory: #faf7f2;
+  --color-ivory-deep: #f2ede4;
+  --color-line: #e7e2d8;
+  --color-charcoal: #1a1a1a;
+  --color-ink: #3a3a38;
+  --color-warm-gray: #8b7e72;
+  /* #8b7e72 is 3.6:1 on ivory: fine for the large uppercase labels it was
+     designed for, too faint for body text. Use this for small readable copy. */
+  --color-warm-gray-deep: #6f6359;
+  --color-rose: #c9a99b;
+  --color-rose-deep: #a8857a;
+
+  --font-display: 'Fraunces Variable', 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-ivory text-charcoal font-sans font-light antialiased;
+    line-height: 1.6;
+  }
+  /* Fraunces is a heavier, more characterful face than A's Cormorant. Light
+     weight at a high optical size keeps headings delicate. */
+  h1, h2, h3, .display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-variation-settings: 'opsz' 144;
+    letter-spacing: -0.015em;
+  }
+  :focus-visible {
+    outline: 1px solid var(--color-rose-deep);
+    outline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  /* Small uppercase eyebrow label: "— Services". */
+  .label {
+    @apply text-[11px] uppercase tracking-[0.32em] text-warm-gray;
+  }
+  .btn-outline {
+    @apply inline-block border px-9 py-4 text-[11px] uppercase tracking-[0.32em] transition-colors duration-300;
+  }
+  .link-underline {
+    @apply border-b border-charcoal pb-1 text-[11px] uppercase tracking-[0.3em] text-charcoal;
+  }
+  .section-title {
+    @apply mb-8 max-w-[18ch] text-[clamp(34px,4vw,56px)] leading-[1.1];
+  }
+  .gutter {
+    @apply px-4 sm:px-8 lg:px-14;
+  }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Both jobs talk to a real Postgres rather than a mock: the caps and reorders
+# are transactional, and the site build prerenders from the live API.
+jobs:
+  backend:
+    name: Test the API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cvc_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/cvc_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run test:migrate
+      - run: npm test
+
+  site:
+    name: Typecheck and prerender the site
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cvc_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cvc_ci
+      ALLOWED_ORIGIN: http://localhost:5173
+      ADMIN_APP_URL: http://localhost:5173/admin
+      SESSION_JWT_SECRET: ci-only-secret
+      VITE_API_BASE_URL: http://localhost:8080
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+      - name: Start the API with placeholder content
+        working-directory: backend
+        run: |
+          npm ci
+          npm run migrate
+          npm run seed -- --placeholders
+          node src/index.js &
+          npx --yes wait-on@8 -t 30000 http://localhost:8080/health
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Build as GitHub Pages will serve it
+        run: npm run build:pages
+        env:
+          BASE_PATH: /creative-vision-consultancy/
+      - name: Prerendered pages carry their content
+        run: |
+          grep -q "Full Planning" build/client/services/index.html
+          grep -q '/creative-vision-consultancy/images/' build/client/index.html
+          test -f build/client/gallery/cynthia-curtis-wright/index.html
+          test -f build/client/404.html

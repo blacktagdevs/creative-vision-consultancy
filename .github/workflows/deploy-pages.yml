@@ -1,0 +1,55 @@
+name: Deploy site
+
+# Runs on every push to main and once an hour. The build reads her content
+# from the live API and bakes it into static HTML for search engines; visitors
+# already see her edits sooner, because each page re-fetches its content in the
+# browser (app/lib/live.ts). The hourly run is what catches the HTML up, and
+# gives galleries published since the last build a page of their own.
+# workflow_dispatch adds a "Run workflow" button for an immediate rebuild.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. A newer run replaces any that's still queued.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+      # The project URL lives under /creative-vision-consultancy/. Set the repo
+      # variable BASE_PATH to "/" once the custom domain is connected.
+      BASE_PATH: ${{ vars.BASE_PATH || '/creative-vision-consultancy/' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:pages
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/client
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
