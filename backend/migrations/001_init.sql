@@ -66,7 +66,7 @@ CREATE INDEX IF NOT EXISTS idx_portfolio_status_order ON portfolio_items (status
 -- ---------------------------------------------------------------------------
 -- portfolio_photos — the photos inside a gallery. width/height are recorded at
 -- upload so the public grid can reserve space and not jump while images load.
--- Deleting a gallery deletes its photos (the API then purges the R2 objects).
+-- Deleting a gallery deletes its photos (the API then deletes their Cloudflare images).
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS portfolio_photos (
   id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
