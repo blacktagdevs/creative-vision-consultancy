@@ -70,7 +70,7 @@ export function isAdminEmail(email) {
   return typeof email === 'string' && config.admin.emails.has(email.trim().toLowerCase())
 }
 
-/** Exact match, or a single-label wildcard like `https://*.example.pages.dev`. */
+/** Exact match, or a single-label wildcard like `https://*.preview.example.com`. */
 export function originAllowed(origin, allowed = config.allowedOrigins) {
   if (typeof origin !== 'string' || !origin) return false
   return allowed.some((entry) => {

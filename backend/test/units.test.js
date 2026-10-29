@@ -15,18 +15,18 @@ describe('slugify', () => {
 })
 
 describe('allowed origins', () => {
-  const allowed = ['https://creativevisionconsultancy.com', 'https://*.cvc-website.pages.dev']
+  const allowed = ['https://creativevisionconsultancy.com', 'https://*.preview.example.com']
 
   it('allows the site and any one-level preview subdomain', () => {
     assert.ok(originAllowed('https://creativevisionconsultancy.com', allowed))
-    assert.ok(originAllowed('https://abc123.cvc-website.pages.dev', allowed))
+    assert.ok(originAllowed('https://abc123.preview.example.com', allowed))
   })
 
   it('refuses lookalikes', () => {
-    assert.ok(!originAllowed('https://cvc-website.pages.dev.evil.com', allowed))
-    assert.ok(!originAllowed('https://a.b.cvc-website.pages.dev', allowed))
-    assert.ok(!originAllowed('https://evilcvc-website.pages.dev', allowed))
-    assert.ok(!originAllowed('http://abc.cvc-website.pages.dev', allowed))
+    assert.ok(!originAllowed('https://preview.example.com.evil.com', allowed))
+    assert.ok(!originAllowed('https://a.b.preview.example.com', allowed))
+    assert.ok(!originAllowed('https://evilpreview.example.com', allowed))
+    assert.ok(!originAllowed('http://abc.preview.example.com', allowed))
     assert.ok(!originAllowed(undefined, allowed))
   })
 })

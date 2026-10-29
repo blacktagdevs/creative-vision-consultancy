@@ -6,7 +6,7 @@ The [Creative Vision Consultancy](https://www.creativevisionconsultancy.com/) si
 |---|---|
 | Site | React Router 7 (framework mode, `ssr: false`), Vite, Tailwind v4. Public pages are **prerendered to static HTML** and hosted on GitHub Pages, behind Cloudflare DNS at launch |
 | API | Express + Postgres on Railway ([backend/](backend/)), forked from Craft Cart |
-| Images | Cloudflare Images (shared BlackTag account). Uploads are tagged `project=cvc`, and only tagged images are ever deleted. Postgres stores only delivery URLs |
+| Images | Cloudflare Images, in CVC's own Cloudflare account ("CVC Site"). Uploads are tagged `project=cvc`, and only tagged images are ever deleted. Postgres stores only delivery URLs; the site picks the `cvcthumb` (900px) or `cvclarge` (2000px) size |
 | Inquiries | Dubsado embed for now; Dubsado vs. discovery-call link is still to be decided with the client ([app/lib/site.ts](app/lib/site.ts) `INQUIRY`) |
 
 ## How content gets to the site
@@ -72,8 +72,9 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
   - Postgres 18 service, private network only (no public TCP proxy).
   - `api` service, deployed with `railway up backend --path-as-root --service api`. To run one-off scripts inside it, use `railway ssh --service api node scripts/seed.js`. [backend/railway.json](backend/railway.json) runs migrations on start, and its health check is `/health`.
   - Env vars are listed in [backend/.env.example](backend/.env.example). `ALLOWED_ORIGIN` takes a comma-separated list: `https://blacktagdevs.github.io` now, plus the custom domain at launch. Visitors' browsers call the public API, so a missing origin means pages silently show their last-built content.
-- **GitHub Pages** ([.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)):
-  - Repo Settings → Pages → Source is **GitHub Actions**. Every push to `main` deploys.
+- **Cloudflare Images:** the `CF_*` vars on Railway point at the "CVC Site" account. The two sizes were created once with `railway ssh --service api node scripts/setup-image-variants.js`. It's safe to re-run if a size changes in [backend/src/lib/images.js](backend/src/lib/images.js).
+- **GitHub Pages** ([.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)), live at https://blacktagdevs.github.io/creative-vision-consultancy/:
+  - Repo Settings → Pages → Source is **GitHub Actions**. Every push to `main` deploys, and so does the hourly schedule.
   - Repo variable `VITE_API_BASE_URL` points the build at the API. `BASE_PATH` defaults to `/creative-vision-consultancy/` (the project URL); set it to `/` when the custom domain is connected.
   - [scripts/assemble-pages.mjs](scripts/assemble-pages.mjs) lifts the prerendered pages beside the assets and copies the SPA fallback to `404.html`, so `/admin` and any other non-prerendered path loads the app.
 
@@ -91,6 +92,7 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 - [x] Public pages: Home, About, Services, Gallery + gallery pages, Inquire; responsive, prerendered
 - [ ] Admin UI (login, services / portfolio / testimonials managers, uploads)
 - [x] Railway: Postgres + API deployed, real brief content seeded (services published, galleries as drafts)
-- [x] GitHub Pages deploy workflow
-- [ ] Infra: `CF_*` image keys on Railway, then `railway ssh --service api node scripts/setup-image-variants.js`; Loops magic-link template; custom domain
+- [x] GitHub Pages: deploying from Actions, live at the project URL
+- [x] Cloudflare Images: keys on Railway, image sizes created, upload/resize/delete verified
+- [ ] Infra: Loops magic-link template; custom domain
 - [ ] Client inputs: Dubsado decision, owner portrait/name, real reviews, social links, event photos
