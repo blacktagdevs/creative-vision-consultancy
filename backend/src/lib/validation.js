@@ -40,8 +40,9 @@ export function slugify(value) {
 }
 
 /**
- * An image reference: an https URL (R2, normally), or — only while R2 isn't
- * configured — an inline data URI, so the admin still works in local dev.
+ * An image reference: an https URL (Cloudflare Images, normally), or — only
+ * while image storage isn't configured — an inline data URI, so the admin
+ * still works in local dev.
  */
 function imageUrl(value, field, { allowInline }) {
   if (typeof value !== 'string') throw new ValidationError(`${field} must be an image`)

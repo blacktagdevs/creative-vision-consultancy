@@ -6,6 +6,7 @@ import { getJson, type Service, type ServiceCategory } from '~/lib/api'
 import { formatPrice, paragraphs } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
 import { asset } from '~/lib/asset'
+import { sized } from '~/lib/image'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -62,7 +63,7 @@ export default function Services({ loaderData }: Route.ComponentProps) {
                   service={s}
                   number={i + 1}
                   flip={i % 2 === 1}
-                  image={s.image_url ? { src: s.image_url, alt: s.name } : fallback}
+                  image={s.image_url ? { src: sized(s.image_url, 'thumb'), alt: s.name } : fallback}
                 />
               )
             })}

@@ -14,7 +14,7 @@ import { query, withTransaction } from '../db.js'
 import { LIMITS } from '../config.js'
 import { wrap } from '../lib/http.js'
 import { requireAdmin } from '../lib/auth.js'
-import { deleteImages, r2Configured, r2KeyFromUrl, uploadImage } from '../lib/r2.js'
+import { deleteImages, imagesConfigured, ourImageId, uploadImage } from '../lib/images.js'
 import { publishNow, publishStatus, schedulePublish } from '../lib/publish.js'
 import {
   ValidationError, slugify, uuidList, uuidParam, validateFields, validatePhoto,
@@ -38,7 +38,7 @@ const RESOURCES = {
 // Inline data URIs are a local-dev fallback only, so the admin works on a
 // laptop without storage keys. In production images never go into Postgres:
 // with storage unconfigured, uploads fail loudly instead of falling back.
-const inlineAllowed = () => !r2Configured() && process.env.NODE_ENV !== 'production'
+const inlineAllowed = () => !imagesConfigured() && process.env.NODE_ENV !== 'production'
 
 function limitError(spec) {
   const err = new ValidationError(
@@ -77,7 +77,7 @@ function insertSql(table, data) {
  * be rolled back, and a broken image on a surviving row is worse than a leak.
  */
 async function purgeUnreferencedImages(urls) {
-  const candidates = [...new Set((urls || []).filter((u) => r2KeyFromUrl(u)))]
+  const candidates = [...new Set((urls || []).filter((u) => ourImageId(u)))]
   if (candidates.length === 0) return
   const { rows } = await query(
     `SELECT image_url FROM portfolio_photos WHERE image_url = ANY($1::text[])
@@ -336,10 +336,10 @@ adminRouter.patch('/portfolio/:id/photos/:photoId', wrap(async (req, res) => {
 // ---------------------------------------------------------------------------
 
 // POST /admin/upload { data, kind } — a base64 image data URI (already shrunk
-// in the browser) stored in R2 under cvc/<services|portfolio>/. 503 when R2
+// in the browser) stored in Cloudflare Images, tagged project=cvc. 503 when it
 // isn't configured; the admin then keeps the data URI inline.
 adminRouter.post('/upload', wrap(async (req, res) => {
-  if (!r2Configured()) return res.status(503).json({ error: 'Image storage is not configured' })
+  if (!imagesConfigured()) return res.status(503).json({ error: 'Image storage is not configured' })
   const folder = req.body?.kind === 'services' ? 'services' : 'portfolio'
   const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/i.exec(req.body?.data || '')
   if (!m) return res.status(400).json({ error: 'Expected a JPEG, PNG or WebP image' })

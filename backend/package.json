@@ -16,7 +16,6 @@
     "test:migrate": "NODE_ENV=test DATABASE_URL=\"${TEST_DATABASE_URL:-postgres://localhost:5432/cvc_test}\" ALLOWED_ORIGIN=http://localhost:5173 ADMIN_APP_URL=http://localhost:5173/admin ADMIN_EMAILS=admin@test.local SESSION_JWT_SECRET=test-only-secret node scripts/migrate.js"
   },
   "dependencies": {
-    "aws4fetch": "^1.0.20",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.3",

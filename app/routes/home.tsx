@@ -5,6 +5,7 @@ import { Testimonials } from '~/components/Testimonials'
 import { getJson, type PortfolioItem, type Testimonial } from '~/lib/api'
 import { pageMeta, SITE } from '~/lib/site'
 import { asset } from '~/lib/asset'
+import { sized } from '~/lib/image'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -153,7 +154,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               <Link key={p.id} to={`/gallery/${p.slug}`} className={`group relative overflow-hidden bg-ivory-deep ${GRID_SLOTS[i]}`}>
                 {p.cover_url && (
                   <img
-                    src={p.cover_url}
+                    src={sized(p.cover_url, 'thumb')}
                     alt={p.cover_alt || p.title}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                     loading="lazy"

@@ -5,7 +5,7 @@ import { query } from '../db.js'
 import { config, isAdminEmail } from '../config.js'
 import { wrap } from '../lib/http.js'
 import { sendMagicLink } from '../lib/mailer.js'
-import { r2Configured } from '../lib/r2.js'
+import { imagesConfigured } from '../lib/images.js'
 import { createMagicToken, hashToken, issueSession, requireAdmin } from '../lib/auth.js'
 
 export const authRouter = Router()
@@ -69,5 +69,5 @@ authRouter.post('/auth/dev-login', (req, res) => {
 // GET /admin/me — cheap token check so the SPA can tell a live session from a
 // stale one in localStorage before rendering the dashboard.
 authRouter.get('/me', requireAdmin, (req, res) => {
-  res.json({ email: req.admin.email, storage: r2Configured() ? 'r2' : 'inline' })
+  res.json({ email: req.admin.email, storage: imagesConfigured() ? 'cloudflare-images' : 'inline' })
 })

@@ -6,6 +6,7 @@ import { Lightbox } from '~/components/Lightbox'
 import { getJson, type Photo, type PortfolioItem } from '~/lib/api'
 import { formatEventMonth, paragraphs, PORTFOLIO_CATEGORY_LABEL } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
+import { sized } from '~/lib/image'
 
 export async function loader({ params }: Route.LoaderArgs) {
   try {
@@ -64,7 +65,7 @@ export default function GalleryItem({ loaderData }: Route.ComponentProps) {
             <li key={p.id} className="mb-4 break-inside-avoid lg:mb-6">
               <button type="button" onClick={() => setOpen(i)} className="group block w-full overflow-hidden" aria-label={`Open photo ${i + 1}`}>
                 <img
-                  src={p.image_url}
+                  src={sized(p.image_url, 'thumb')}
                   alt={p.alt || `${item.title}, photo ${i + 1}`}
                   width={p.width ?? undefined}
                   height={p.height ?? undefined}

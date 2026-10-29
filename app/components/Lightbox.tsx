@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { Photo } from '~/lib/api'
+import { sized } from '~/lib/image'
 
 // Full-screen photo viewer on a native <dialog>, which brings focus trapping,
 // Escape to close, and an inert background for free. Arrow keys step through.
@@ -57,7 +58,7 @@ export function Lightbox({
             </button>
           </div>
           <div className="relative flex min-h-0 flex-1 items-center justify-center px-2 pb-6 sm:px-16">
-            <img src={photo.image_url} alt={photo.alt || title} className="max-h-full max-w-full object-contain" />
+            <img src={sized(photo.image_url, 'large')} alt={photo.alt || title} className="max-h-full max-w-full object-contain" />
             {photos.length > 1 && (
               <>
                 <button

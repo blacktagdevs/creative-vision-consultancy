@@ -57,15 +57,13 @@ export const config = {
     debounceMs: Number(optional('PUBLISH_DEBOUNCE_SECONDS', '60')) * 1000,
   },
 
-  // Cloudflare R2 (S3-compatible) for service + portfolio images. CVC objects
-  // are namespaced under the `cvc/` prefix in the shared BlackTag bucket.
-  r2: {
-    accessKeyId: optional('R2_ACCESS_KEY_ID'),
-    secretAccessKey: optional('R2_SECRET_ACCESS_KEY'),
-    endpoint: optional('R2_ENDPOINT'), // https://<account>.r2.cloudflarestorage.com
-    bucket: optional('R2_BUCKET', 'blacktag-media'),
-    publicBase: optional('R2_PUBLIC_BASE'), // https://pub-....r2.dev or a custom domain
-    prefix: optional('R2_PREFIX', 'cvc'),
+  // Cloudflare Images for service + portfolio photos (shared BlackTag account;
+  // CVC uploads are tagged project=cvc). Unset means uploads are refused in
+  // production and kept inline only in local dev.
+  images: {
+    accountId: optional('CF_ACCOUNT_ID'),
+    accountHash: optional('CF_IMAGES_ACCOUNT_HASH'), // from imagedelivery.net/<hash>/...
+    token: optional('CF_IMAGES_TOKEN'), // API token with Cloudflare Images: Edit
   },
 }
 

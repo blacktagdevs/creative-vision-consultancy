@@ -5,6 +5,7 @@ import { PageHeader } from '~/components/PageHeader'
 import { getJson, type PortfolioItem } from '~/lib/api'
 import { formatEventMonth, PORTFOLIO_CATEGORY_LABEL } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
+import { sized } from '~/lib/image'
 
 const INTRO =
   'Explore a curated selection of weddings, celebrations, and social events that reflect our signature approach. Each event is designed to feel effortless for our clients and seamless for their guests.'
@@ -33,7 +34,7 @@ export default function Gallery({ loaderData }: Route.ComponentProps) {
                   <div className="mb-6 aspect-[4/5] overflow-hidden bg-ivory-deep">
                     {p.cover_url && (
                       <img
-                        src={p.cover_url}
+                        src={sized(p.cover_url, 'thumb')}
                         alt={p.cover_alt || p.title}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                         loading={i < 3 ? 'eager' : 'lazy'}

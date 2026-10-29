@@ -15,7 +15,7 @@ app.set('trust proxy', 1) // hosted behind a proxy; needed for rate-limit + req.
 app.use(cors({ origin: (origin, cb) => cb(null, originAllowed(origin)) }))
 
 // Generous because images arrive as base64 data URIs (downscaled client-side)
-// before being handed to R2.
+// before being handed to Cloudflare Images.
 app.use(express.json({ limit: '8mb' }))
 
 app.get('/health', (_req, res) => res.status(200).json({ ok: true }))

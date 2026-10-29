@@ -6,7 +6,7 @@ The [Creative Vision Consultancy](https://www.creativevisionconsultancy.com/) si
 |---|---|
 | Site | React Router 7 (framework mode, `ssr: false`), Vite, Tailwind v4. Public pages are **prerendered to static HTML** and hosted on GitHub Pages, behind Cloudflare DNS at launch |
 | API | Express + Postgres on Railway ([backend/](backend/)), forked from Craft Cart |
-| Images | Cloudflare R2, shared `blacktag-media` bucket, `cvc/` prefix |
+| Images | Cloudflare Images (shared BlackTag account). Uploads are tagged `project=cvc`, and only tagged images are ever deleted. Postgres stores only delivery URLs |
 | Inquiries | Dubsado embed for now; Dubsado vs. discovery-call link is still to be decided with the client ([app/lib/site.ts](app/lib/site.ts) `INQUIRY`) |
 
 ## How content gets to the site
@@ -61,11 +61,11 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 | Route | |
 |---|---|
 | `GET/POST /admin/{services,portfolio,testimonials}` | List with `{count, limit}`; create. Over the cap returns `409 {code: 'limit_reached'}` |
-| `GET/PATCH/DELETE /admin/{…}/:id` | Edit only the fields sent; delete purges R2 images after commit |
+| `GET/PATCH/DELETE /admin/{…}/:id` | Edit only the fields sent; delete removes its Cloudflare images after commit |
 | `PUT /admin/{…}/order {ids}` | Full new order. A stale list gets `409` |
 | `POST /admin/portfolio/:id/photos {add, remove_ids}` | One transaction; capped at 40 per gallery |
 | `PUT /admin/portfolio/:id/photos/order`, `PATCH …/photos/:photoId {alt}` | Photo order and descriptions |
-| `POST /admin/upload {data, kind}` | Base64 image to R2 (`503` if R2 not configured) |
+| `POST /admin/upload {data, kind}` | Base64 image to Cloudflare Images (`503` if not configured) |
 | `GET /admin/publish-status`, `POST /admin/publish` | Rebuild status; "publish now" |
 
 ## Deploy
@@ -90,10 +90,10 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 
 ## Status
 
-- [x] Backend: schema, caps, ordering, photos, publish hook, R2, auth (53 tests)
+- [x] Backend: schema, caps, ordering, photos, publish trigger, Cloudflare Images, auth (51 tests)
 - [x] Public pages: Home, About, Services, Gallery + gallery pages, Inquire; responsive, prerendered
 - [ ] Admin UI (login, services / portfolio / testimonials managers, uploads, publish banner)
 - [x] Railway: Postgres + API deployed, real brief content seeded (services published, galleries as drafts)
 - [x] GitHub Pages deploy workflow
-- [ ] Infra: `GITHUB_DEPLOY_TOKEN` on Railway, image storage keys, Loops magic-link template, custom domain
+- [ ] Infra: `GITHUB_DEPLOY_TOKEN` and `CF_*` image keys on Railway, then `railway ssh --service api node scripts/setup-image-variants.js`; Loops magic-link template; custom domain
 - [ ] Client inputs: Dubsado decision, owner portrait/name, real reviews, social links, event photos
