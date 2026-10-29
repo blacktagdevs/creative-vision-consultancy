@@ -6,16 +6,25 @@ import { getJson, type PortfolioItem } from '~/lib/api'
 import { formatEventMonth, PORTFOLIO_CATEGORY_LABEL } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
 import { sized } from '~/lib/image'
+import { live } from '~/lib/live'
 
 const INTRO =
   'Explore a curated selection of weddings, celebrations, and social events that reflect our signature approach. Each event is designed to feel effortless for our clients and seamless for their guests.'
 
 export const meta: Route.MetaFunction = () => pageMeta('Gallery', INTRO, '/gallery')
 
-export async function loader() {
+async function load() {
   const { items } = await getJson<{ items: PortfolioItem[] }>('/portfolio')
   return { items }
 }
+
+export const loader = load
+
+// In the browser: fetch again so visitors see edits made since the last build.
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+  return live(load, serverLoader)
+}
+clientLoader.hydrate = true as const
 
 export default function Gallery({ loaderData }: Route.ComponentProps) {
   const { items } = loaderData

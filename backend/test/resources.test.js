@@ -3,7 +3,6 @@
 import { describe, it, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
 import { query } from '../src/db.js'
-import { publishStatus } from '../src/lib/publish.js'
 import { admin, api, resetDb, useServer, newService, newGallery, newTestimonial, IMG } from './helpers.js'
 
 useServer()
@@ -12,7 +11,7 @@ describe('admin resources', () => {
   beforeEach(resetDb)
 
   it('requires a session', async () => {
-    for (const path of ['/admin/services', '/admin/portfolio', '/admin/testimonials', '/admin/publish-status']) {
+    for (const path of ['/admin/services', '/admin/portfolio', '/admin/testimonials']) {
       assert.equal((await api(path)).status, 401, path)
     }
   })
@@ -168,33 +167,5 @@ describe('gallery photos', () => {
       body: { add: [{ image_url: 'javascript:alert(1)' }] },
     })
     assert.equal(res.status, 400)
-  })
-})
-
-describe('publishing', () => {
-  beforeEach(resetDb)
-
-  it('editing a draft does not rebuild the site', async () => {
-    const { body: s } = await admin('/services', { method: 'POST', body: newService({ status: 'draft' }) })
-    await admin(`/services/${s.id}`, { method: 'PATCH', body: { name: 'Renamed' } })
-    assert.equal(publishStatus().pending, false)
-  })
-
-  it('publishing, editing published, and unpublishing all rebuild', async () => {
-    const { body: s } = await admin('/services', { method: 'POST', body: newService({ status: 'draft' }) })
-
-    await admin(`/services/${s.id}`, { method: 'PATCH', body: { status: 'published' } })
-    assert.equal(publishStatus().pending, true)
-    assert.equal((await admin('/publish', { method: 'POST' })).body.pending, false)
-
-    await admin(`/services/${s.id}`, { method: 'PATCH', body: { status: 'draft' } })
-    assert.equal(publishStatus().pending, true)
-  })
-
-  it('deleting a published item rebuilds', async () => {
-    const { body: t } = await admin('/testimonials', { method: 'POST', body: newTestimonial({ status: 'published' }) })
-    await admin('/publish', { method: 'POST' })
-    await admin(`/testimonials/${t.id}`, { method: 'DELETE' })
-    assert.equal(publishStatus().pending, true)
   })
 })

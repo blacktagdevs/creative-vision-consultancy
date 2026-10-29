@@ -10,7 +10,6 @@ import { app } from '../src/index.js'
 import { pool, query } from '../src/db.js'
 import { config } from '../src/config.js'
 import { issueSession } from '../src/lib/auth.js'
-import { resetPublishState } from '../src/lib/publish.js'
 
 /* Hard stop: these tests TRUNCATE every table. If DATABASE_URL is ever pointed
    at a development or production database, that is data loss, so refuse to run
@@ -56,7 +55,6 @@ export function admin(path, opts = {}) {
 /** Wipe every table between tests so cases can't leak into each other. */
 export async function resetDb() {
   await query('TRUNCATE services, portfolio_photos, portfolio_items, testimonials, login_tokens CASCADE')
-  resetPublishState()
 }
 
 export function useServer() {

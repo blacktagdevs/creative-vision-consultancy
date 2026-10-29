@@ -7,11 +7,12 @@ import { getJson, type Photo, type PortfolioItem } from '~/lib/api'
 import { formatEventMonth, paragraphs, PORTFOLIO_CATEGORY_LABEL } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
 import { sized } from '~/lib/image'
+import { live } from '~/lib/live'
 
-export async function loader({ params }: Route.LoaderArgs) {
+async function load(slug: string) {
   try {
     const [detail, list] = await Promise.all([
-      getJson<{ item: PortfolioItem; photos: Photo[] }>(`/portfolio/${encodeURIComponent(params.slug)}`),
+      getJson<{ item: PortfolioItem; photos: Photo[] }>(`/portfolio/${encodeURIComponent(slug)}`),
       getJson<{ items: PortfolioItem[] }>('/portfolio'),
     ])
     // The next gallery in her chosen order, wrapping round, for the footer link.
@@ -23,6 +24,18 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw err
   }
 }
+
+export function loader({ params }: Route.LoaderArgs) {
+  return load(params.slug)
+}
+
+// In the browser: fetch again, so new photos show and an unpublished gallery
+// 404s without waiting for the next build. Also covers galleries published
+// since the last build, whose pages weren't prerendered at all.
+export async function clientLoader({ params, serverLoader }: Route.ClientLoaderArgs) {
+  return live(() => load(params.slug), serverLoader)
+}
+clientLoader.hydrate = true as const
 
 export const meta: Route.MetaFunction = ({ loaderData, params }) => {
   if (!loaderData) return [{ title: 'Not found' }]

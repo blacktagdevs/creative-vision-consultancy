@@ -4,6 +4,7 @@ import { InquiryEmbed } from '~/components/InquiryEmbed'
 import { PageHeader } from '~/components/PageHeader'
 import { getJson, type Service } from '~/lib/api'
 import { pageMeta } from '~/lib/site'
+import { live } from '~/lib/live'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -12,10 +13,18 @@ export const meta: Route.MetaFunction = () =>
     '/inquire'
   )
 
-export async function loader() {
+async function load() {
   const { services } = await getJson<{ services: Service[] }>('/services')
   return { services: services.map((s) => ({ slug: s.slug, name: s.name })) }
 }
+
+export const loader = load
+
+// In the browser: fetch again so visitors see edits made since the last build.
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+  return live(load, serverLoader)
+}
+clientLoader.hydrate = true as const
 
 export default function Inquire({ loaderData }: Route.ComponentProps) {
   // "Inquire Here" on a service links to /inquire?service=<slug>. The page is

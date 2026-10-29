@@ -14,11 +14,10 @@ The [Creative Vision Consultancy](https://www.creativevisionconsultancy.com/) si
 The owner manages **services (max 10)**, **portfolio galleries (max 12, 40 photos each)** and **testimonials (max 8)** from the admin (coming next). Everything else is hard-coded.
 
 1. She saves a change in the admin. The API writes it to Postgres.
-2. If the change touches anything public (publishing, unpublishing, editing or reordering published items), the API starts the **Deploy site** GitHub Actions workflow. Calls are debounced 60s so a burst of edits makes one build.
-3. The workflow rebuilds the site. `react-router.config.ts` asks the API for the gallery slugs, and each page's `loader` fetches its content, **at build time**.
-4. About two minutes later the change is live as static HTML.
+2. **Visitors see it on their next page load.** Every page is prerendered, then re-fetches its content from the public API in the browser (`clientLoader` + [app/lib/live.ts](app/lib/live.ts)), the same way Craft Cart works. If the API can't be reached, the page keeps its prerendered content.
+3. **Search engines see it within the hour.** The [deploy workflow](.github/workflows/deploy-pages.yml) rebuilds the static HTML hourly and on every push to `main`. Galleries published since the last build load through the `404.html` app shell until then.
 
-If the API is down during a build, the build fails and the last good deploy stays up.
+Nothing in Railway talks to GitHub: there's no deploy token. If the API is down during a build, the build fails and the last good deploy stays up.
 
 ## Local development
 
@@ -66,19 +65,17 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 | `POST /admin/portfolio/:id/photos {add, remove_ids}` | One transaction; capped at 40 per gallery |
 | `PUT /admin/portfolio/:id/photos/order`, `PATCH …/photos/:photoId {alt}` | Photo order and descriptions |
 | `POST /admin/upload {data, kind}` | Base64 image to Cloudflare Images (`503` if not configured) |
-| `GET /admin/publish-status`, `POST /admin/publish` | Rebuild status; "publish now" |
 
 ## Deploy
 
 - **Railway** (project "CVC Backend"; live API at `https://api-production-c4eae.up.railway.app`):
   - Postgres 18 service, private network only (no public TCP proxy).
   - `api` service, deployed with `railway up backend --path-as-root --service api`. To run one-off scripts inside it, use `railway ssh --service api node scripts/seed.js`. [backend/railway.json](backend/railway.json) runs migrations on start, and its health check is `/health`.
-  - Env vars are listed in [backend/.env.example](backend/.env.example). `ALLOWED_ORIGIN` takes a comma-separated list: `https://blacktagdevs.github.io` now, plus the custom domain at launch.
+  - Env vars are listed in [backend/.env.example](backend/.env.example). `ALLOWED_ORIGIN` takes a comma-separated list: `https://blacktagdevs.github.io` now, plus the custom domain at launch. Visitors' browsers call the public API, so a missing origin means pages silently show their last-built content.
 - **GitHub Pages** ([.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)):
   - Repo Settings → Pages → Source is **GitHub Actions**. Every push to `main` deploys.
   - Repo variable `VITE_API_BASE_URL` points the build at the API. `BASE_PATH` defaults to `/creative-vision-consultancy/` (the project URL); set it to `/` when the custom domain is connected.
   - [scripts/assemble-pages.mjs](scripts/assemble-pages.mjs) lifts the prerendered pages beside the assets and copies the SPA fallback to `404.html`, so `/admin` and any other non-prerendered path loads the app.
-  - Rebuilds after publishing: a fine-grained GitHub token with **Actions: Read and write** on this repo only, set as `GITHUB_DEPLOY_TOKEN` on Railway.
 
 ## Content notes
 
@@ -90,10 +87,10 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 
 ## Status
 
-- [x] Backend: schema, caps, ordering, photos, publish trigger, Cloudflare Images, auth (51 tests)
+- [x] Backend: schema, caps, ordering, photos, Cloudflare Images, auth (45 tests)
 - [x] Public pages: Home, About, Services, Gallery + gallery pages, Inquire; responsive, prerendered
-- [ ] Admin UI (login, services / portfolio / testimonials managers, uploads, publish banner)
+- [ ] Admin UI (login, services / portfolio / testimonials managers, uploads)
 - [x] Railway: Postgres + API deployed, real brief content seeded (services published, galleries as drafts)
 - [x] GitHub Pages deploy workflow
-- [ ] Infra: `GITHUB_DEPLOY_TOKEN` and `CF_*` image keys on Railway, then `railway ssh --service api node scripts/setup-image-variants.js`; Loops magic-link template; custom domain
+- [ ] Infra: `CF_*` image keys on Railway, then `railway ssh --service api node scripts/setup-image-variants.js`; Loops magic-link template; custom domain
 - [ ] Client inputs: Dubsado decision, owner portrait/name, real reviews, social links, event photos

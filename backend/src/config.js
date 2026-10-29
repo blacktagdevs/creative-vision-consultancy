@@ -46,17 +46,6 @@ export const config = {
     magicLinkTemplateId: optional('LOOPS_MAGIC_LINK_TEMPLATE_ID'),
   },
 
-  // Public pages are prerendered, so published edits only go live once the
-  // site rebuilds: a GitHub Actions run of the Pages deploy workflow, started
-  // through the API. Unset token means the rebuild is logged, not sent.
-  publish: {
-    githubToken: optional('GITHUB_DEPLOY_TOKEN'),
-    githubRepo: optional('GITHUB_REPO', 'blacktagdevs/creative-vision-consultancy'),
-    workflow: optional('GITHUB_DEPLOY_WORKFLOW', 'deploy-pages.yml'),
-    ref: optional('GITHUB_DEPLOY_REF', 'main'),
-    debounceMs: Number(optional('PUBLISH_DEBOUNCE_SECONDS', '60')) * 1000,
-  },
-
   // Cloudflare Images for service + portfolio photos (shared BlackTag account;
   // CVC uploads are tagged project=cvc). Unset means uploads are refused in
   // production and kept inline only in local dev.

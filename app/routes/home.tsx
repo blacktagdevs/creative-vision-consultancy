@@ -6,6 +6,7 @@ import { getJson, type PortfolioItem, type Testimonial } from '~/lib/api'
 import { pageMeta, SITE } from '~/lib/site'
 import { asset } from '~/lib/asset'
 import { sized } from '~/lib/image'
+import { live } from '~/lib/live'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -14,14 +15,22 @@ export const meta: Route.MetaFunction = () =>
     '/'
   )
 
-// Runs at build time (prerender), not in the visitor's browser.
-export async function loader() {
+// Content for the page: read at build time (prerender) and again in the browser.
+async function load() {
   const [portfolio, reviews] = await Promise.all([
     getJson<{ items: PortfolioItem[] }>('/portfolio'),
     getJson<{ testimonials: Testimonial[] }>('/testimonials'),
   ])
   return { portfolio: portfolio.items.slice(0, 6), testimonials: reviews.testimonials }
 }
+
+export const loader = load
+
+// In the browser: fetch again so visitors see edits made since the last build.
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+  return live(load, serverLoader)
+}
+clientLoader.hydrate = true as const
 
 // Direction A's editorial grid: two wide, three tall, one panoramic. Each slot
 // is a 12-column span and an aspect ratio; on phones everything stacks.

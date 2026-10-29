@@ -7,6 +7,7 @@ import { formatPrice, paragraphs } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
 import { asset } from '~/lib/asset'
 import { sized } from '~/lib/image'
+import { live } from '~/lib/live'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -15,10 +16,18 @@ export const meta: Route.MetaFunction = () =>
     '/services'
   )
 
-export async function loader() {
+async function load() {
   const { services } = await getJson<{ services: Service[] }>('/services')
   return { services }
 }
+
+export const loader = load
+
+// In the browser: fetch again so visitors see edits made since the last build.
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+  return live(load, serverLoader)
+}
+clientLoader.hydrate = true as const
 
 const CATEGORIES: { key: ServiceCategory; id: string; label: string; title: string }[] = [
   { key: 'wedding', id: 'weddings', label: '— Weddings', title: 'For the day you’ve imagined.' },

@@ -1,11 +1,16 @@
 name: Deploy site
 
-# Runs on every push to main, and when the API asks for a rebuild after the
-# owner publishes something in the admin (workflow_dispatch, see
-# backend/src/lib/publish.js). The build reads her content from the live API.
+# Runs on every push to main and once an hour. The build reads her content
+# from the live API and bakes it into static HTML for search engines; visitors
+# already see her edits sooner, because each page re-fetches its content in the
+# browser (app/lib/live.ts). The hourly run is what catches the HTML up, and
+# gives galleries published since the last build a page of their own.
+# workflow_dispatch adds a "Run workflow" button for an immediate rebuild.
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -13,8 +18,7 @@ permissions:
   pages: write
   id-token: write
 
-# One deploy at a time. A newer request replaces any that's still queued, so a
-# burst of publishes ends in a single build of the latest content.
+# One deploy at a time. A newer run replaces any that's still queued.
 concurrency:
   group: pages
   cancel-in-progress: false

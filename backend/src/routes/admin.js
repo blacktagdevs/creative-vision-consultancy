@@ -1,21 +1,21 @@
 // Admin API for the three things the owner manages: services, portfolio
 // galleries and testimonials. They share one shape (list, create, edit, delete,
 // reorder, publish/unpublish), so the routes are generated from RESOURCES
-// rather than written out three times. Portfolio photos, uploads and
-// publishing have their own routes below.
+// rather than written out three times. Portfolio photos and uploads have their
+// own routes below.
 //
-// Two rules hold throughout:
-//  - Caps (LIMITS) are checked inside the create transaction under an advisory
-//    lock, so two quick clicks on "Add" can't both squeeze past the limit.
-//  - Any change that touches what the public sees schedules a site rebuild
-//    (lib/publish.js). Editing a draft never does.
+// Caps (LIMITS) are checked inside the create transaction under an advisory
+// lock, so two quick clicks on "Add" can't both squeeze past the limit.
+//
+// Nothing here rebuilds the site. Visitors' browsers fetch published content
+// from the public API when a page opens, so a change shows on the next page
+// load; the prerendered HTML catches up on the hourly deploy.
 import { Router } from 'express'
 import { query, withTransaction } from '../db.js'
 import { LIMITS } from '../config.js'
 import { wrap } from '../lib/http.js'
 import { requireAdmin } from '../lib/auth.js'
 import { deleteImages, imagesConfigured, ourImageId, uploadImage } from '../lib/images.js'
-import { publishNow, publishStatus, schedulePublish } from '../lib/publish.js'
 import {
   ValidationError, slugify, uuidList, uuidParam, validateFields, validatePhoto,
 } from '../lib/validation.js'
@@ -141,7 +141,6 @@ for (const [name, spec] of Object.entries(RESOURCES)) {
       return rows[0]
     })
 
-    if (created.status === 'published') schedulePublish(`${name}: added "${created.slug || created.id}"`)
     res.status(201).json(await loadAdminItem(name, created.id))
   }))
 
@@ -184,9 +183,6 @@ for (const [name, spec] of Object.entries(RESOURCES)) {
     if (!result) return res.status(404).json({ error: 'Not found' })
     const { before, after } = result
 
-    if (before.status === 'published' || after.status === 'published') {
-      schedulePublish(`${name}: edited "${after.slug || after.id}"`)
-    }
     if (before.image_url && before.image_url !== after.image_url) {
       await purgeUnreferencedImages([before.image_url])
     }
@@ -204,7 +200,6 @@ for (const [name, spec] of Object.entries(RESOURCES)) {
     })
     if (!removed) return res.status(404).json({ error: 'Not found' })
 
-    if (removed.row.status === 'published') schedulePublish(`${name}: removed "${removed.row.slug || id}"`)
     await purgeUnreferencedImages(removed.urls.filter(Boolean))
     res.status(204).end()
   }))
@@ -214,9 +209,9 @@ for (const [name, spec] of Object.entries(RESOURCES)) {
   // is refused rather than half-applied.
   adminRouter.put(`/${name}/order`, wrap(async (req, res) => {
     const ids = uuidList(req.body?.ids)
-    const anyPublished = await withTransaction(async (client) => {
+    await withTransaction(async (client) => {
       await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`cap:${table}`])
-      const { rows } = await client.query(`SELECT id, status FROM ${table}`)
+      const { rows } = await client.query(`SELECT id FROM ${table}`)
       const current = new Set(rows.map((r) => r.id))
       if (ids.length !== current.size || !ids.every((i) => current.has(i))) {
         throw new ValidationError('This list changed since you opened it. Refresh and try again.', 409)
@@ -227,9 +222,7 @@ for (const [name, spec] of Object.entries(RESOURCES)) {
          WHERE t.id = x.id`,
         [ids]
       )
-      return rows.some((r) => r.status === 'published')
     })
-    if (anyPublished) schedulePublish(`${name}: reordered`)
     res.json({ ok: true })
   }))
 }
@@ -249,8 +242,8 @@ adminRouter.post('/portfolio/:id/photos', wrap(async (req, res) => {
 
   const result = await withTransaction(async (client) => {
     // Locking the gallery row serialises batches against the same gallery.
-    const { rows: [item] } = await client.query('SELECT status FROM portfolio_items WHERE id = $1 FOR UPDATE', [id])
-    if (!item) return null
+    const item = await client.query('SELECT 1 FROM portfolio_items WHERE id = $1 FOR UPDATE', [id])
+    if (!item.rowCount) return null
 
     const removed = removeIds.length
       ? (await client.query(
@@ -281,11 +274,10 @@ adminRouter.post('/portfolio/:id/photos', wrap(async (req, res) => {
       )
     }
     await client.query('UPDATE portfolio_items SET updated_at = now() WHERE id = $1', [id])
-    return { status: item.status, removedUrls: removed.map((r) => r.image_url), added: add.length, removed: removed.length }
+    return { removedUrls: removed.map((r) => r.image_url), added: add.length, removed: removed.length }
   })
 
   if (!result) return res.status(404).json({ error: 'Not found' })
-  if (result.status === 'published') schedulePublish('portfolio: photos changed')
   await purgeUnreferencedImages(result.removedUrls)
   res.json({ added: result.added, removed: result.removed, item: await loadAdminItem('portfolio', id) })
 }))
@@ -293,9 +285,9 @@ adminRouter.post('/portfolio/:id/photos', wrap(async (req, res) => {
 adminRouter.put('/portfolio/:id/photos/order', wrap(async (req, res) => {
   const { id } = req.params
   const ids = uuidList(req.body?.ids)
-  const status = await withTransaction(async (client) => {
-    const { rows: [item] } = await client.query('SELECT status FROM portfolio_items WHERE id = $1 FOR UPDATE', [id])
-    if (!item) return null
+  const found = await withTransaction(async (client) => {
+    const item = await client.query('SELECT 1 FROM portfolio_items WHERE id = $1 FOR UPDATE', [id])
+    if (!item.rowCount) return false
     const { rows } = await client.query('SELECT id FROM portfolio_photos WHERE portfolio_item_id = $1', [id])
     const current = new Set(rows.map((r) => r.id))
     if (ids.length !== current.size || !ids.every((i) => current.has(i))) {
@@ -307,10 +299,9 @@ adminRouter.put('/portfolio/:id/photos/order', wrap(async (req, res) => {
        WHERE p.id = x.id`,
       [ids]
     )
-    return item.status
+    return true
   })
-  if (!status) return res.status(404).json({ error: 'Not found' })
-  if (status === 'published') schedulePublish('portfolio: photos reordered')
+  if (!found) return res.status(404).json({ error: 'Not found' })
   res.json({ ok: true })
 }))
 
@@ -322,13 +313,11 @@ adminRouter.patch('/portfolio/:id/photos/:photoId', wrap(async (req, res) => {
     `UPDATE portfolio_photos ph SET alt = $3
      FROM portfolio_items p
      WHERE ph.id = $2 AND ph.portfolio_item_id = $1 AND p.id = ph.portfolio_item_id
-     RETURNING ph.*, p.status AS item_status`,
+     RETURNING ph.*`,
     [req.params.id, req.params.photoId, alt]
   )
   if (!rows[0]) return res.status(404).json({ error: 'Not found' })
-  const { item_status: itemStatus, ...photo } = rows[0]
-  if (itemStatus === 'published') schedulePublish('portfolio: photo description')
-  res.json(photo)
+  res.json(rows[0])
 }))
 
 // ---------------------------------------------------------------------------
@@ -346,20 +335,4 @@ adminRouter.post('/upload', wrap(async (req, res) => {
   const buffer = Buffer.from(m[2], 'base64')
   if (buffer.length > 6 * 1024 * 1024) return res.status(413).json({ error: 'Image too large (max ~6MB)' })
   res.json({ url: await uploadImage(folder, buffer, m[1].toLowerCase()) })
-}))
-
-// ---------------------------------------------------------------------------
-// Publishing
-// ---------------------------------------------------------------------------
-
-adminRouter.get('/publish-status', (_req, res) => res.json(publishStatus()))
-
-// POST /admin/publish — "Publish now": skip the debounce and rebuild.
-adminRouter.post('/publish', wrap(async (_req, res) => {
-  try {
-    await publishNow()
-  } catch {
-    return res.status(502).json({ error: 'The site rebuild could not be started. Try again in a minute.', ...publishStatus() })
-  }
-  res.json(publishStatus())
 }))
