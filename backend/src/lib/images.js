@@ -3,10 +3,10 @@
 // (https://imagedelivery.net/<account hash>/<image id>/<variant>); the site
 // swaps the variant segment for the size it needs (see app/lib/image.ts).
 //
-// The Images account is shared with other BlackTag sites (Blk Girls Shoot), so
-// every upload is tagged with metadata { project: 'cvc' }, and a delete only
-// goes through for an image that carries that tag, so nothing here can remove
-// another site's photo.
+// The Images account is CVC's own, but every upload is still tagged with
+// metadata { project: 'cvc' } and a delete only goes through for an image that
+// carries that tag, so nothing here can remove a photo the owner stored in
+// Images some other way.
 import { config } from '../config.js'
 
 const PROJECT = 'cvc'
@@ -73,7 +73,7 @@ export async function deleteImages(urls) {
 
   for (const id of ids) {
     try {
-      // Read the tag before deleting: the account isn't ours alone.
+      // Read the tag before deleting: only touch images this site uploaded.
       const info = await fetch(api(`/${id}`), { headers: auth() })
       if (info.status === 404) { deleted += 1; continue } // already gone
       const body = await info.json().catch(() => null)
