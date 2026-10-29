@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",
-    "preview": "npx serve build/client -s",
+    "preview": "node scripts/preview.mjs",
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:pages": "react-router build && node scripts/assemble-pages.mjs"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",

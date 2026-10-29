@@ -79,9 +79,13 @@ jobs:
           npx --yes wait-on@8 -t 30000 http://localhost:8080/health
       - run: npm ci
       - run: npm run typecheck
-      - run: npm run build
+      - name: Build as GitHub Pages will serve it
+        run: npm run build:pages
+        env:
+          BASE_PATH: /creative-vision-consultancy/
       - name: Prerendered pages carry their content
         run: |
           grep -q "Full Planning" build/client/services/index.html
+          grep -q '/creative-vision-consultancy/images/' build/client/index.html
           test -f build/client/gallery/cynthia-curtis-wright/index.html
-          test -f build/client/__spa-fallback.html
+          test -f build/client/404.html

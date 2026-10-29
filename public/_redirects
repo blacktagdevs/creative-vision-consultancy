@@ -1,4 +1,0 @@
-# Prerendered pages are served as-is. The admin isn't prerendered, so every
-# /admin path loads the SPA shell and React Router takes it from there.
-/admin    /__spa-fallback.html  200
-/admin/*  /__spa-fallback.html  200

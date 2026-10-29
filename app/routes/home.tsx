@@ -4,6 +4,7 @@ import { CtaBand } from '~/components/CtaBand'
 import { Testimonials } from '~/components/Testimonials'
 import { getJson, type PortfolioItem, type Testimonial } from '~/lib/api'
 import { pageMeta, SITE } from '~/lib/site'
+import { asset } from '~/lib/asset'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -37,7 +38,7 @@ const TEASERS = [
     title: 'Weddings',
     body: 'Full planning, partial planning, and month-of coordination — from vision to execution.',
     href: '/services#weddings',
-    image: '/images/couple-garden.webp',
+    image: asset('/images/couple-garden.webp'),
     alt: 'Bride and groom embracing in a garden, her veil catching the light',
   },
   {
@@ -68,7 +69,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           against a bright sky. */}
       <section className="relative h-svh min-h-[620px] overflow-hidden bg-charcoal">
         <img
-          src="/images/hero-floral-arch.webp"
+          src={asset('/images/hero-floral-arch.webp')}
           alt="A bride in an off-the-shoulder gown beneath a floral arch of lavender and pink blooms"
           className="h-full w-full object-cover object-[50%_22%]"
           fetchPriority="high"
@@ -102,7 +103,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
         <div className="aspect-[4/5] overflow-hidden">
           <img
-            src="/images/bride-robe-window.webp"
+            src={asset('/images/bride-robe-window.webp')}
             alt="A bride in a tulle robe seated by a sunlit window"
             className="h-full w-full object-cover"
             loading="lazy"

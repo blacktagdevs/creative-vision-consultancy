@@ -5,6 +5,7 @@ import { PageHeader } from '~/components/PageHeader'
 import { getJson, type Service, type ServiceCategory } from '~/lib/api'
 import { formatPrice, paragraphs } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
+import { asset } from '~/lib/asset'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -25,10 +26,10 @@ const CATEGORIES: { key: ServiceCategory; id: string; label: string; title: stri
 
 // Shown when a service has no photo of its own. Rotates so neighbours differ.
 const FALLBACK_IMAGES = [
-  { src: '/images/couple-garden.webp', alt: 'Bride and groom embracing in a garden' },
-  { src: '/images/bride-robe-smile.webp', alt: 'A bride smiling in a beaded tulle robe' },
-  { src: '/images/hero-floral-arch.webp', alt: 'A bride beneath a floral arch' },
-  { src: '/images/bride-robe-window.webp', alt: 'A bride seated by a sunlit window' },
+  { src: asset('/images/couple-garden.webp'), alt: 'Bride and groom embracing in a garden' },
+  { src: asset('/images/bride-robe-smile.webp'), alt: 'A bride smiling in a beaded tulle robe' },
+  { src: asset('/images/hero-floral-arch.webp'), alt: 'A bride beneath a floral arch' },
+  { src: asset('/images/bride-robe-window.webp'), alt: 'A bride seated by a sunlit window' },
 ]
 
 export default function Services({ loaderData }: Route.ComponentProps) {

@@ -23,9 +23,9 @@ export const config = {
   port: Number(optional('PORT', '8080')),
   databaseUrl: required('DATABASE_URL'),
 
-  // Comma-separated. An entry like `https://*.cvc-website.pages.dev` matches
-  // any one subdomain, so Cloudflare branch previews can reach the API without
-  // listing each one.
+  // Comma-separated: https://blacktagdevs.github.io while the site lives on the
+  // GitHub Pages project URL, then the custom domain. An entry like
+  // `https://*.example.com` matches any one subdomain.
   allowedOrigins: list(required('ALLOWED_ORIGIN')),
 
   admin: {
@@ -46,10 +46,14 @@ export const config = {
     magicLinkTemplateId: optional('LOOPS_MAGIC_LINK_TEMPLATE_ID'),
   },
 
-  // Public pages are prerendered, so published edits only go live once
-  // Cloudflare Pages rebuilds. Unset means the rebuild is logged, not sent.
+  // Public pages are prerendered, so published edits only go live once the
+  // site rebuilds: a GitHub Actions run of the Pages deploy workflow, started
+  // through the API. Unset token means the rebuild is logged, not sent.
   publish: {
-    deployHookUrl: optional('PAGES_DEPLOY_HOOK_URL'),
+    githubToken: optional('GITHUB_DEPLOY_TOKEN'),
+    githubRepo: optional('GITHUB_REPO', 'blacktagdevs/creative-vision-consultancy'),
+    workflow: optional('GITHUB_DEPLOY_WORKFLOW', 'deploy-pages.yml'),
+    ref: optional('GITHUB_DEPLOY_REF', 'main'),
     debounceMs: Number(optional('PUBLISH_DEBOUNCE_SECONDS', '60')) * 1000,
   },
 

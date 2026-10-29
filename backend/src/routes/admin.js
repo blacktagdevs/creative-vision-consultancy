@@ -35,10 +35,10 @@ const RESOURCES = {
   testimonials: { table: 'testimonials', limit: LIMITS.testimonials, noun: 'testimonials', newAt: 'end' },
 }
 
-// Inline data URIs are a local-dev fallback only. Once R2 is configured every
-// image must be a stored one, or prerendered pages would carry megabytes of
-// base64.
-const inlineAllowed = () => !r2Configured()
+// Inline data URIs are a local-dev fallback only, so the admin works on a
+// laptop without storage keys. In production images never go into Postgres:
+// with storage unconfigured, uploads fail loudly instead of falling back.
+const inlineAllowed = () => !r2Configured() && process.env.NODE_ENV !== 'production'
 
 function limitError(spec) {
   const err = new ValidationError(

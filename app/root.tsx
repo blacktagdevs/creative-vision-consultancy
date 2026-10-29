@@ -1,9 +1,10 @@
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
+import { isRouteErrorResponse, Link, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import type { Route } from './+types/root'
 import './app.css'
+import { asset } from '~/lib/asset'
 
 export const links: Route.LinksFunction = () => [
-  { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+  { rel: 'icon', href: asset('/favicon.svg'), type: 'image/svg+xml' },
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -41,7 +42,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       <h1 className="text-[clamp(40px,6vw,72px)] leading-none">
         {notFound ? 'This page has moved on.' : 'We hit a snag.'}
       </h1>
-      <a href="/" className="link-underline mt-12">Return home</a>
+      <Link to="/" className="link-underline mt-12">Return home</Link>
     </main>
   )
 }

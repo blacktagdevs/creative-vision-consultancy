@@ -2,6 +2,7 @@ import type { Route } from './+types/about'
 import { CtaBand } from '~/components/CtaBand'
 import { PageHeader } from '~/components/PageHeader'
 import { pageMeta } from '~/lib/site'
+import { asset } from '~/lib/asset'
 
 export const meta: Route.MetaFunction = () =>
   pageMeta(
@@ -18,7 +19,7 @@ export default function About() {
       <section className="gutter mx-auto grid max-w-[1320px] items-center gap-16 py-28 md:grid-cols-2 lg:gap-28 lg:py-36">
         <div className="aspect-[4/5] overflow-hidden">
           <img
-            src="/images/couple-garden.webp"
+            src={asset('/images/couple-garden.webp')}
             alt="A groom kissing his bride’s forehead as she holds a bouquet of white roses"
             className="h-full w-full object-cover"
           />
