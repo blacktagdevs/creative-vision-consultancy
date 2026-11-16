@@ -8,7 +8,7 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import jwt from 'jsonwebtoken'
 import { config } from '../src/config.js'
-import { adminToken, getBaseUrl, useServer } from './helpers.js'
+import { adminToken, api, getBaseUrl, useServer } from './helpers.js'
 
 useServer()
 
@@ -65,5 +65,24 @@ describe('admin session tokens', () => {
 
   it('refuses a missing header outright', async () => {
     assert.equal(await withAuthHeader(null), 401)
+  })
+})
+
+// The emailed link is the only way to get a session. These pin that down, so a
+// sign-in shortcut can't quietly come back.
+describe('getting a session', () => {
+  it('answers an admin address exactly as it answers anyone else, with no session', async () => {
+    const admin = await api('/admin/auth/request', { method: 'POST', body: { email: 'admin@test.local' } })
+    const stranger = await api('/admin/auth/request', { method: 'POST', body: { email: 'someone@example.com' } })
+    assert.equal(admin.status, 200)
+    assert.deepEqual(admin.body, stranger.body)
+  })
+
+  it('has no dev-login route', async () => {
+    // Unknown /admin paths fall through to the admin router, whose session
+    // gate answers first. What matters is that nothing hands out a token.
+    const res = await api('/admin/auth/dev-login', { method: 'POST', body: {} })
+    assert.equal(res.status, 401)
+    assert.equal(res.body?.token, undefined)
   })
 })

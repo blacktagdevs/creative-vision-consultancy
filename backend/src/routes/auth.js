@@ -52,20 +52,6 @@ authRouter.get('/auth/verify', wrap(async (req, res) => {
   res.redirect(`${config.admin.appUrl}#token=${issueSession(token.email)}`)
 }))
 
-// POST /admin/auth/dev-login — DEV ONLY. Skips the magic-link round-trip and
-// issues a session for an allowlisted admin. Hard-gated: 404 in production (see
-// config.devAdminBypass).
-authRouter.post('/auth/dev-login', (req, res) => {
-  if (!config.devAdminBypass) return res.status(404).json({ error: 'Not found' })
-
-  const requested = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : ''
-  const email = requested && isAdminEmail(requested) ? requested : [...config.admin.emails][0]
-  if (!email) return res.status(409).json({ error: 'No admin emails configured' })
-
-  console.warn(`[DEV_ADMIN_BYPASS] Issued admin session for ${email} without a magic link`)
-  res.json({ token: issueSession(email), email })
-})
-
 // GET /admin/me — cheap token check so the SPA can tell a live session from a
 // stale one in localStorage before rendering the dashboard.
 authRouter.get('/me', requireAdmin, (req, res) => {

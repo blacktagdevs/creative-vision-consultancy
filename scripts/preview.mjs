@@ -10,7 +10,8 @@ const base = `/${(process.env.BASE_PATH || '/').replace(/^\/|\/$/g, '')}/`.repla
 const port = Number(process.env.PORT || 4173)
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
-  '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.data': 'text/x-script',
+  '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.woff2': 'font/woff2',
+  '.data': 'text/x-script',
 }
 
 function send(res, file, status = 200) {

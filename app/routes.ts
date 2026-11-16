@@ -16,5 +16,15 @@ export default (async () => {
       ...(hasGalleries ? [route('gallery/:slug', 'routes/gallery-item.tsx')] : []),
       route('inquire', 'routes/inquire.tsx'),
     ]),
+    // Client-only: no loaders, and not in the prerender list, so GitHub Pages
+    // serves the SPA fallback for every /admin path.
+    route('admin', 'routes/admin/layout.tsx', [
+      index('routes/admin/dashboard.tsx'),
+      route('galleries', 'routes/admin/galleries.tsx'),
+      route('galleries/:id', 'routes/admin/gallery-edit.tsx'),
+      route('services', 'routes/admin/services.tsx'),
+      route('services/:id', 'routes/admin/service-edit.tsx'),
+      route('testimonials', 'routes/admin/testimonials.tsx'),
+    ]),
   ]
 })() satisfies RouteConfig

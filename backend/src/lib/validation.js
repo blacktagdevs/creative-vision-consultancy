@@ -54,6 +54,9 @@ function imageUrl(value, field, { allowInline }) {
   throw new ValidationError(`${field} must be an uploaded image`)
 }
 
+/** The tones a gallery can wear; mirrored in migration 002 and app/lib/accent.ts. */
+export const ACCENTS = ['blush', 'sage', 'champagne', 'dusk', 'clay']
+
 const TYPES = {
   text(value, f) {
     if (typeof value !== 'string' && value !== null) throw new ValidationError(`${f.label} must be text`)
@@ -127,7 +130,8 @@ export const FIELDS = {
     category: { type: 'enum', label: 'Category', values: ['wedding', 'engagement', 'social', 'corporate'], required: true },
     event_date: { type: 'date', label: 'Event date' },
     location: { type: 'text', label: 'Location', max: 120 },
-    summary: { type: 'text', label: 'Summary', max: 1000 },
+    summary: { type: 'text', label: 'Event description', max: 1000 },
+    accent: { type: 'enum', label: 'Color', values: ACCENTS },
     cover_photo_id: { type: 'uuid', label: 'Cover photo' },
     status: STATUS,
   },

@@ -4,6 +4,7 @@ import { CtaBand } from '~/components/CtaBand'
 import { Testimonials } from '~/components/Testimonials'
 import { getJson, type PortfolioItem, type Testimonial } from '~/lib/api'
 import { pageMeta, SITE } from '~/lib/site'
+import { ACCENT, accentOf } from '~/lib/accent'
 import { asset } from '~/lib/asset'
 import { sized } from '~/lib/image'
 import { live } from '~/lib/live'
@@ -160,7 +161,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </div>
           <div className="gutter mt-16 grid gap-4 md:grid-cols-12 md:gap-6">
             {portfolio.map((p, i) => (
-              <Link key={p.id} to={`/gallery/${p.slug}`} className={`group relative overflow-hidden bg-ivory-deep ${GRID_SLOTS[i]}`}>
+              <Link key={p.id} to={`/gallery/${p.slug}`} className={`group relative overflow-hidden ${ACCENT[accentOf(p.accent)].bg} ${GRID_SLOTS[i]}`}>
                 {p.cover_url && (
                   <img
                     src={sized(p.cover_url, 'thumb')}

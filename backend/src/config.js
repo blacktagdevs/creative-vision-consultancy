@@ -35,12 +35,6 @@ export const config = {
     appUrl: required('ADMIN_APP_URL'),
   },
 
-  // Dev-only escape hatch: skip the magic-link round-trip and issue an admin
-  // session directly, so the dashboard is reachable on localhost without email.
-  // Hard-gated: never active when NODE_ENV=production, regardless of the flag.
-  devAdminBypass:
-    optional('DEV_ADMIN_BYPASS') === 'true' && optional('NODE_ENV') !== 'production',
-
   loops: {
     apiKey: optional('LOOPS_API_KEY'),
     magicLinkTemplateId: optional('LOOPS_MAGIC_LINK_TEMPLATE_ID'),
