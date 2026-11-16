@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
-import { NAV, SITE } from '~/lib/site'
+import { LOGIN, NAV, SITE } from '~/lib/site'
+import { Logo } from './Logo'
 
 // Fixed nav. Over the home hero it's white on the photo; everywhere else, and
 // once the hero scrolls away, it's charcoal on an ivory bar. (Direction A used
@@ -49,14 +50,14 @@ export function Nav() {
       >
         <div
           className={`gutter flex items-center justify-between transition-[padding] duration-300 ${
-            light ? 'py-6 lg:py-7' : 'py-4 lg:py-5'
+            light ? 'py-4 lg:py-5' : 'py-2.5 lg:py-3'
           }`}
         >
-          <Link to="/" className="display text-[17px] tracking-[0.14em] sm:text-[20px]" aria-label={`${SITE.name} home`}>
-            Creative Vision Consultancy
+          <Link to="/" className="shrink-0" aria-label={`${SITE.name} home`}>
+            <Logo white={light} className="h-12 sm:h-14" />
           </Link>
           <nav aria-label="Main" className="hidden md:block">
-            <ul className="flex gap-9 text-[11px] uppercase tracking-[0.22em] lg:gap-11">
+            <ul className="flex items-center gap-9 text-[11px] uppercase tracking-[0.22em] lg:gap-11">
               {NAV.map((item) => (
                 <li key={item.to}>
                   <NavLink
@@ -70,6 +71,11 @@ export function Nav() {
                   </NavLink>
                 </li>
               ))}
+              <li>
+                <Link to={LOGIN.to} className="border border-current px-4 py-2 transition-opacity hover:opacity-60">
+                  {LOGIN.label}
+                </Link>
+              </li>
             </ul>
           </nav>
           <button
@@ -107,6 +113,14 @@ export function Nav() {
                   </NavLink>
                 </li>
               ))}
+              <li className="pt-5">
+                <Link
+                  to={LOGIN.to}
+                  className="flex w-full items-center justify-center border border-charcoal py-3 text-[11px] uppercase tracking-[0.22em] text-charcoal"
+                >
+                  {LOGIN.label}
+                </Link>
+              </li>
             </ul>
           </nav>
         )}

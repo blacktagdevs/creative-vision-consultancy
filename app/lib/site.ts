@@ -3,7 +3,7 @@ export const SITE = {
   name: 'Creative Vision Consultancy',
   short: 'CVC',
   tagline: 'Transforming visions into extraordinary experiences',
-  url: 'https://www.creativevisionconsultancy.com',
+  url: 'https://www.cvconsultancy.co',
   location: 'Atlanta, GA',
   reach: 'Serving clients nationwide',
   // TODO(client): confirm handles. Links render only when set.
@@ -20,6 +20,9 @@ export const NAV = [
   { to: '/gallery', label: 'Gallery' },
   { to: '/inquire', label: 'Inquire' },
 ] as const
+
+/** Where the owner signs in. Not in NAV: it renders as a button, not a page link. */
+export const LOGIN = { to: '/admin', label: 'Login' } as const
 
 /** Standard <head> tags for a page. */
 export function pageMeta(title: string | null, description: string, path: string) {

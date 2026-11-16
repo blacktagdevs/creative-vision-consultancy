@@ -1,5 +1,6 @@
 // The API this site is built from. At build time the prerender reads it to
 // produce static pages; in the browser only the admin talks to it.
+import type { Accent } from './accent'
 export const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080').replace(/\/$/, '')
 
 export type ServiceCategory = 'wedding' | 'social_corporate'
@@ -26,6 +27,7 @@ export interface PortfolioItem {
   title: string
   slug: string
   category: PortfolioCategory
+  accent: Accent
   event_date: string | null
   location: string | null
   summary: string | null

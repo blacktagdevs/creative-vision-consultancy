@@ -74,13 +74,13 @@ const SERVICES = [
 ]
 
 const PORTFOLIO = [
-  { title: 'Ogechi & Richard Flowers', category: 'wedding' },
-  { title: 'Ify & Oscar Nwasofer', category: 'wedding' },
-  { title: 'Cynthia & Curtis Wright', category: 'wedding' },
-  { title: 'Chelsie & Tanner Dixon', category: 'wedding' },
-  { title: 'Phil’s Birthday Party', category: 'social' },
-  { title: 'Engagement', category: 'engagement' },
-  { title: 'Umu Igbo Unite Gala', category: 'corporate' },
+  { title: 'Ogechi & Richard Flowers', category: 'wedding', accent: 'blush' },
+  { title: 'Ify & Oscar Nwasofer', category: 'wedding', accent: 'sage' },
+  { title: 'Cynthia & Curtis Wright', category: 'wedding', accent: 'dusk' },
+  { title: 'Chelsie & Tanner Dixon', category: 'wedding', accent: 'champagne' },
+  { title: 'Phil’s Birthday Party', category: 'social', accent: 'clay' },
+  { title: 'Engagement', category: 'engagement', accent: 'sage' },
+  { title: 'Umu Igbo Unite Gala', category: 'corporate', accent: 'dusk' },
 ]
 
 // Stand-ins from the design drafts. Never seeded unless --placeholders.
@@ -127,9 +127,9 @@ async function run() {
     if (await isEmpty(client, 'portfolio_items')) {
       for (const [i, p] of PORTFOLIO.entries()) {
         const { rows: [item] } = await client.query(
-          `INSERT INTO portfolio_items (title, slug, category, sort_order, status)
-           VALUES ($1,$2,$3,$4,$5) RETURNING id`,
-          [p.title, slugify(p.title), p.category, i, placeholders ? 'published' : 'draft']
+          `INSERT INTO portfolio_items (title, slug, category, accent, sort_order, status)
+           VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+          [p.title, slugify(p.title), p.category, p.accent, i, placeholders ? 'published' : 'draft']
         )
         if (placeholders) {
           // Rotate through the stand-ins so each gallery opens on a different cover.

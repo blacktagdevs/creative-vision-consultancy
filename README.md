@@ -1,17 +1,17 @@
 # Creative Vision Consultancy — Website
 
-The [Creative Vision Consultancy](https://www.creativevisionconsultancy.com/) site refresh. The client chose **Direction A (Editorial Luxe)** with **Direction C's heading font (Fraunces)**. The three original drafts are kept for reference in [design/drafts/](design/drafts/).
+The [Creative Vision Consultancy](https://www.cvconsultancy.co/) site refresh. The client chose **Direction A (Editorial Luxe)** with **Direction C's heading font (Fraunces)**. The three original drafts are kept for reference in [design/drafts/](design/drafts/).
 
 | | |
 |---|---|
-| Site | React Router 7 (framework mode, `ssr: false`), Vite, Tailwind v4. Public pages are **prerendered to static HTML** and hosted on GitHub Pages, behind Cloudflare DNS at launch |
+| Site | React Router 7 (framework mode, `ssr: false`), Vite, Tailwind v4. Public pages are **prerendered to static HTML** and hosted on GitHub Pages at `www.cvconsultancy.co` (DNS on Cloudflare) |
 | API | Express + Postgres on Railway ([backend/](backend/)), forked from Craft Cart |
 | Images | Cloudflare Images, in CVC's own Cloudflare account ("CVC Site"). Uploads are tagged `project=cvc`, and only tagged images are ever deleted. Postgres stores only delivery URLs; the site picks the `cvcthumb` (900px) or `cvclarge` (2000px) size |
 | Inquiries | Dubsado embed for now; Dubsado vs. discovery-call link is still to be decided with the client ([app/lib/site.ts](app/lib/site.ts) `INQUIRY`) |
 
 ## How content gets to the site
 
-The owner manages **services (max 10)**, **portfolio galleries (max 12, 40 photos each)** and **testimonials (max 8)** from the admin (coming next). Everything else is hard-coded.
+The owner manages **services (max 10)**, **portfolio galleries (max 12, 40 photos each)** and **testimonials (max 8)** from the admin at `/admin`. Everything else is hard-coded. Inquiries are not in the admin: they arrive in her Dubsado account, and the dashboard links there.
 
 1. She saves a change in the admin. The API writes it to Postgres.
 2. **Visitors see it on their next page load.** Every page is prerendered, then re-fetches its content from the public API in the browser (`clientLoader` + [app/lib/live.ts](app/lib/live.ts)), the same way Craft Cart works. If the API can't be reached, the page keeps its prerendered content.
@@ -36,9 +36,11 @@ npm run dev                     # http://localhost:8080
 npm install
 npm run dev                     # http://localhost:5173
 npm run build                   # prerender into build/client (needs the API running)
-BASE_PATH=/creative-vision-consultancy/ npm run build:pages   # exactly what GitHub Pages serves
-BASE_PATH=/creative-vision-consultancy/ npm run preview       # serve it the way GitHub Pages does
+npm run build:pages             # exactly what GitHub Pages serves
+npm run preview                 # serve it the way GitHub Pages does
 ```
+
+The admin is at http://localhost:5173/admin. Sign in with an address from `ADMIN_EMAILS`. Without the `LOOPS_*` keys no email is sent: the API prints the login link to its console instead, so open it from there. There is no other way in, locally or in production. Without Cloudflare keys, uploaded photos are kept inline as data URIs (local only; production refuses them).
 
 `npm run seed` without `--placeholders` loads only real content from the brief: six published services, and seven gallery drafts with no photos. That is what production gets.
 
@@ -55,7 +57,7 @@ The backend suite runs against a real Postgres. It refuses to run unless the dat
 
 Public (published rows only, in the owner's order): `GET /services`, `GET /portfolio`, `GET /portfolio/:slug`, `GET /testimonials`.
 
-Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
+Admin (magic-link session from `POST /admin/auth/request {email}`, emailed through Loops):
 
 | Route | |
 |---|---|
@@ -64,6 +66,7 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 | `PUT /admin/{…}/order {ids}` | Full new order. A stale list gets `409` |
 | `POST /admin/portfolio/:id/photos {add, remove_ids}` | One transaction; capped at 40 per gallery |
 | `PUT /admin/portfolio/:id/photos/order`, `PATCH …/photos/:photoId {alt}` | Photo order and descriptions |
+| `accent` on a gallery | One of `blush`, `sage`, `champagne`, `dusk`, `clay` (default `blush`). Tints its card on `/gallery`, its page header and its home tile. Tones live in `app/app.css` and [app/lib/accent.ts](app/lib/accent.ts) |
 | `POST /admin/upload {data, kind}` | Base64 image to Cloudflare Images (`503` if not configured) |
 
 ## Deploy
@@ -71,16 +74,21 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 - **Railway** (project "CVC Backend"; live API at `https://api-production-c4eae.up.railway.app`):
   - Postgres 18 service, private network only (no public TCP proxy).
   - `api` service, deployed with `railway up backend --path-as-root --service api`. To run one-off scripts inside it, use `railway ssh --service api node scripts/seed.js`. [backend/railway.json](backend/railway.json) runs migrations on start, and its health check is `/health`.
-  - Env vars are listed in [backend/.env.example](backend/.env.example). `ALLOWED_ORIGIN` takes a comma-separated list: `https://blacktagdevs.github.io` now, plus the custom domain at launch. Visitors' browsers call the public API, so a missing origin means pages silently show their last-built content.
+  - Env vars are listed in [backend/.env.example](backend/.env.example). `ALLOWED_ORIGIN` takes a comma-separated list: `https://www.cvconsultancy.co`, `https://cvconsultancy.co`, plus the GitHub Pages and Railway review origins. Visitors' browsers call the public API, so a missing origin means pages silently show their last-built content. `ADMIN_APP_URL` is where a login link lands: `https://www.cvconsultancy.co/admin`.
+  - Admin sign-in emails go through Loops (`LOOPS_API_KEY`, `LOOPS_MAGIC_LINK_TEMPLATE_ID`; the template uses the data variable `loginUrl`). `ADMIN_EMAILS` is the allowlist: `hello@cvconsultancy.co` and `cameron@blacktagdevs.com`.
+  - `site` service: a review copy of the site, served from Railway at https://site-production-c6e5758e.up.railway.app. The root [railway.json](railway.json) builds it with `npm run build:pages` and serves it with [scripts/preview.mjs](scripts/preview.mjs); deploy a branch to it with `railway up --service site`. Its service variables set `VITE_API_BASE_URL`, `BASE_PATH=/`, and `RAILPACK_*` overrides so Railway's builder doesn't swap in its own static server. Sign-in links land on `ADMIN_APP_URL`, so to test the admin there, point that at the Railway URL for the session.
 - **Cloudflare Images:** the `CF_*` vars on Railway point at the "CVC Site" account. The two sizes were created once with `railway ssh --service api node scripts/setup-image-variants.js`. It's safe to re-run if a size changes in [backend/src/lib/images.js](backend/src/lib/images.js).
-- **GitHub Pages** ([.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)), live at https://blacktagdevs.github.io/creative-vision-consultancy/:
-  - Repo Settings → Pages → Source is **GitHub Actions**. Every push to `main` deploys, and so does the hourly schedule.
-  - Repo variable `VITE_API_BASE_URL` points the build at the API. `BASE_PATH` defaults to `/creative-vision-consultancy/` (the project URL); set it to `/` when the custom domain is connected.
+- **GitHub Pages** ([.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml)), live at https://www.cvconsultancy.co:
+  - Repo Settings → Pages → Source is **GitHub Actions**, custom domain `www.cvconsultancy.co`, HTTPS enforced. Every push to `main` deploys, and so does the hourly schedule.
+  - Repo variables: `VITE_API_BASE_URL` points the build at the API, and `BASE_PATH=/` because the site sits at the domain root. (Without the variable it builds for the old project URL, `/creative-vision-consultancy/`.)
+  - Cloudflare DNS for `cvconsultancy.co`: four `A` records on the apex to GitHub Pages (`185.199.108–111.153`) and `www` as a `CNAME` to `blacktagdevs.github.io`, all **DNS only** (grey cloud), so GitHub issues and renews the certificate. GitHub redirects the apex to `www`. The MX and TXT records are the client's Google Workspace mail; leave them alone.
+  - The old domain, `creativevisionconsultancy.com`, is on Squarespace. Its redirect to `www.cvconsultancy.co` is set up there, not here.
   - [scripts/assemble-pages.mjs](scripts/assemble-pages.mjs) lifts the prerendered pages beside the assets and copies the SPA fallback to `404.html`, so `/admin` and any other non-prerendered path loads the app.
 
 ## Content notes
 
 - Hero, intro, about and services fallback photos are the client's own, from the brief PDF (`public/images/`).
+- The logo (`public/images/logo.png`, via [app/components/Logo.tsx](app/components/Logo.tsx)) is the client's 500px PNG with its empty margins cropped. It's in the nav, footer, admin header and sign-in screen; over the home hero it is flattened to white. The favicon is still the "CVC" monogram, because the script wordmark is unreadable at 16px.
 - The social/corporate and consulting teaser photos on the home page are Unsplash stand-ins, marked `IMAGE:` in [app/routes/home.tsx](app/routes/home.tsx).
 - The owner portrait on About is a placeholder until the client supplies one.
 - Copy edits from the brief: "birthdays celebrations" became "birthday celebrations"; "Month of Coordination" became "Month-of Coordination".
@@ -88,11 +96,12 @@ Admin (magic-link session; `POST /admin/auth/dev-login` works locally):
 
 ## Status
 
-- [x] Backend: schema, caps, ordering, photos, Cloudflare Images, auth (45 tests)
+- [x] Backend: schema, caps, ordering, photos, Cloudflare Images, auth (51 tests)
 - [x] Public pages: Home, About, Services, Gallery + gallery pages, Inquire; responsive, prerendered
-- [ ] Admin UI (login, services / portfolio / testimonials managers, uploads)
+- [x] Admin UI (login, dashboard, galleries with photos and color, services, testimonials)
 - [x] Railway: Postgres + API deployed, real brief content seeded (services published, galleries as drafts)
 - [x] GitHub Pages: deploying from Actions, live at the project URL
 - [x] Cloudflare Images: keys on Railway, image sizes created, upload/resize/delete verified
-- [ ] Infra: Loops magic-link template; custom domain
+- [x] Loops: magic-link email live; admin sign-in is email-link only
+- [ ] Custom domain: `www.cvconsultancy.co` on GitHub Pages; `creativevisionconsultancy.com` redirect on Squarespace
 - [ ] Client inputs: Dubsado decision, owner portrait/name, real reviews, social links, event photos

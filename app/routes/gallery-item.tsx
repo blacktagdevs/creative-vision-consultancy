@@ -3,6 +3,7 @@ import { data, Link } from 'react-router'
 import type { Route } from './+types/gallery-item'
 import { CtaBand } from '~/components/CtaBand'
 import { Lightbox } from '~/components/Lightbox'
+import { ACCENT, accentOf } from '~/lib/accent'
 import { getJson, type Photo, type PortfolioItem } from '~/lib/api'
 import { formatEventMonth, paragraphs, PORTFOLIO_CATEGORY_LABEL } from '~/lib/format'
 import { pageMeta } from '~/lib/site'
@@ -51,19 +52,21 @@ export default function GalleryItem({ loaderData }: Route.ComponentProps) {
   const [open, setOpen] = useState<number | null>(null)
   const close = useCallback(() => setOpen(null), [])
   const when = formatEventMonth(item.event_date)
+  const tone = ACCENT[accentOf(item.accent)]
+  const nextTone = next ? ACCENT[accentOf(next.accent)] : null
 
   return (
     <>
-      <section className="gutter border-b border-line pb-16 pt-36 text-center sm:pb-20 sm:pt-44">
-        <Link to="/gallery" className="label mb-7 inline-block hover:text-charcoal">
+      <section className={`gutter pb-16 pt-36 text-center sm:pb-20 sm:pt-44 ${tone.bg}`}>
+        <Link to="/gallery" className={`label mb-7 inline-block hover:text-charcoal ${tone.deep}`}>
           ← Gallery
         </Link>
         <h1 className="mx-auto max-w-[18ch] text-[clamp(44px,7vw,96px)] leading-[1.02]">{item.title}</h1>
-        <p className="label mt-8">
+        <p className={`label mt-8 ${tone.deep}`}>
           {[PORTFOLIO_CATEGORY_LABEL[item.category], when, item.location].filter(Boolean).join(' · ')}
         </p>
         {item.summary && (
-          <div className="display mx-auto mt-8 max-w-[52ch] space-y-4 text-[19px] italic leading-relaxed text-warm-gray-deep">
+          <div className="display mx-auto mt-8 max-w-[52ch] space-y-4 text-[19px] italic leading-relaxed text-ink">
             {paragraphs(item.summary).map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -91,10 +94,10 @@ export default function GalleryItem({ loaderData }: Route.ComponentProps) {
         </ul>
       </section>
 
-      {next && (
-        <section className="gutter border-t border-line py-20 text-center">
-          <p className="label mb-5">Next</p>
-          <Link to={`/gallery/${next.slug}`} className="display text-[clamp(32px,4vw,52px)] leading-tight hover:text-rose-deep">
+      {next && nextTone && (
+        <section className={`gutter py-20 text-center ${nextTone.bg}`}>
+          <p className={`label mb-5 ${nextTone.deep}`}>Next</p>
+          <Link to={`/gallery/${next.slug}`} className="display text-[clamp(32px,4vw,52px)] leading-tight hover:underline hover:decoration-1 hover:underline-offset-8">
             {next.title} →
           </Link>
         </section>

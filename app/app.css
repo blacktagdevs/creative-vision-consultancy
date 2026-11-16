@@ -17,6 +17,26 @@
   --color-rose: #c9a99b;
   --color-rose-deep: #a8857a;
 
+  /* Per-gallery accents. -tint is the background, -hover its deepened state,
+     -deep the small-label tone. Charcoal on every tint is 10.6:1 or better and
+     deep-on-tint (hover included) is at least 4.5:1. Keep in step with
+     app/lib/accent.ts and the CHECK in backend/migrations/002. */
+  --color-accent-blush: #eeddd5;
+  --color-accent-blush-hover: #e6d1c7;
+  --color-accent-blush-deep: #765448;
+  --color-accent-sage: #dde4d6;
+  --color-accent-sage-hover: #d2dcc9;
+  --color-accent-sage-deep: #4f5f47;
+  --color-accent-champagne: #f1e6cc;
+  --color-accent-champagne-hover: #eadbb6;
+  --color-accent-champagne-deep: #6b5730;
+  --color-accent-dusk: #dcd9e6;
+  --color-accent-dusk-hover: #cfcbdd;
+  --color-accent-dusk-deep: #56517a;
+  --color-accent-clay: #e9d3c3;
+  --color-accent-clay-hover: #e0c5b2;
+  --color-accent-clay-deep: #774b34;
+
   --font-display: 'Fraunces Variable', 'Times New Roman', serif;
   --font-sans: 'Inter Variable', system-ui, sans-serif;
 }
