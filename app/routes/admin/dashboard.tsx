@@ -92,11 +92,20 @@ export default function Dashboard() {
           )}
         </Card>
 
-        <section className="flex flex-col border border-line bg-ivory-deep p-6 md:p-8" aria-labelledby="inquiries-heading">
+        <Card title="Pages" to="/admin/pages">
+          <p className="text-[14px] text-warm-gray-deep">Home and About</p>
+          <p className="text-[15px] text-ink">The words and photos on each page</p>
+        </Card>
+
+        {/* Not something she manages here, so it sits apart from the four cards above, across the full width. */}
+        <section
+          className="flex flex-col border border-line bg-ivory-deep p-6 md:col-span-2 md:p-8"
+          aria-labelledby="inquiries-heading"
+        >
           <h2 id="inquiries-heading" className="text-[28px] leading-tight">
             Inquiries
           </h2>
-          <p className="mt-4 flex-1 text-[15px] leading-relaxed text-ink">
+          <p className="mt-4 max-w-prose flex-1 text-[15px] leading-relaxed text-ink">
             New inquiries arrive in Dubsado, not here. Answer them and send proposals, contracts and invoices
             from your Dubsado account.
           </p>

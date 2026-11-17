@@ -11,7 +11,7 @@ The [Creative Vision Consultancy](https://www.cvconsultancy.co/) site refresh. T
 
 ## How content gets to the site
 
-The owner manages **services (max 10)**, **portfolio galleries (max 12, 40 photos each)** and **testimonials (max 8)** from the admin at `/admin`. Everything else is hard-coded. Inquiries are not in the admin: they arrive in her Dubsado account, and the dashboard links there.
+The owner manages **services (max 10)**, **portfolio galleries (max 12, 40 photos each)** and **testimonials (max 8)** from the admin at `/admin`, plus the **words and photos on the Home and About pages** (admin → Pages). Everything else, such as navigation, button labels and the Services page layout, is hard-coded. Inquiries are not in the admin: they arrive in her Dubsado account, and the dashboard links there.
 
 1. She saves a change in the admin. The API writes it to Postgres.
 2. **Visitors see it on their next page load.** Every page is prerendered, then re-fetches its content from the public API in the browser (`clientLoader` + [app/lib/live.ts](app/lib/live.ts)), the same way Craft Cart works. If the API can't be reached, the page keeps its prerendered content.
@@ -55,7 +55,7 @@ The backend suite runs against a real Postgres. It refuses to run unless the dat
 
 ## API
 
-Public (published rows only, in the owner's order): `GET /services`, `GET /portfolio`, `GET /portfolio/:slug`, `GET /testimonials`.
+Public (published rows only, in the owner's order): `GET /services`, `GET /portfolio`, `GET /portfolio/:slug`, `GET /testimonials`, and `GET /pages/{home,about}` (only the fields she has changed; `{}` until she saves one).
 
 Admin (magic-link session from `POST /admin/auth/request {email}`, emailed through Loops):
 
@@ -67,7 +67,8 @@ Admin (magic-link session from `POST /admin/auth/request {email}`, emailed throu
 | `POST /admin/portfolio/:id/photos {add, remove_ids}` | One transaction; capped at 40 per gallery |
 | `PUT /admin/portfolio/:id/photos/order`, `PATCH …/photos/:photoId {alt}` | Photo order and descriptions |
 | `accent` on a gallery | One of `blush`, `sage`, `champagne`, `dusk`, `clay` (default `blush`). Tints its card on `/gallery`, its page header and its home tile. Tones live in `app/app.css` and [app/lib/accent.ts](app/lib/accent.ts) |
-| `POST /admin/upload {data, kind}` | Base64 image to Cloudflare Images (`503` if not configured) |
+| `GET/PATCH /admin/pages/{home,about}` | The page's changed fields as one flat object, plus `updated_at`. PATCH merges; `null` or blank removes a field, which puts the original back. Images a save replaces are deleted from Cloudflare once nothing else uses them |
+| `POST /admin/upload {data, kind}` | Base64 image to Cloudflare Images (`503` if not configured). `kind` is `portfolio`, `services` or `pages` |
 
 ## Deploy
 
@@ -88,16 +89,17 @@ Admin (magic-link session from `POST /admin/auth/request {email}`, emailed throu
 
 - Hero, intro, about and services fallback photos are the client's own, from the brief PDF (`public/images/`).
 - The logo (`public/images/logo.png`, via [app/components/Logo.tsx](app/components/Logo.tsx)) is the client's 500px PNG with its empty margins cropped. It's in the nav, footer, admin header and sign-in screen; over the home hero it is flattened to white. The favicon is still the "CVC" monogram, because the script wordmark is unreadable at 16px.
-- The social/corporate and consulting teaser photos on the home page are Unsplash stand-ins, marked `IMAGE:` in [app/routes/home.tsx](app/routes/home.tsx).
-- The owner portrait on About is a placeholder until the client supplies one.
+- **Home and About content** lives in two places. [app/lib/pages.ts](app/lib/pages.ts) holds the original wording and photos for every editable field. The API's `page_content` table holds only what she has changed, and the page lays those changes over the originals. A field she clears shows the original again, so no section can end up empty. To add an editable field, add its key in `app/lib/pages.ts`, in `backend/src/lib/pages.js` (the API rejects unknown keys), and in the editor layout in `app/lib/admin/pages.ts`. TypeScript and a backend test both fail if these get out of step. In headings, `*word*` renders as italics (rose on the dark hero and closing band). In body text, a blank line starts a new paragraph.
+- The social/corporate and consulting teaser photos on the home page are Unsplash stand-ins (the originals in `app/lib/pages.ts`) until she uploads her own from admin → Pages.
+- The owner portrait on About shows a "Portrait coming soon" panel until she uploads one from admin → Pages.
 - Copy edits from the brief: "birthdays celebrations" became "birthday celebrations"; "Month of Coordination" became "Month-of Coordination".
 - Service descriptions are plain text (blank line = new paragraph) plus an optional bullet list. That was chosen over rich text so nothing she pastes can inject markup into the prerendered pages.
 
 ## Status
 
-- [x] Backend: schema, caps, ordering, photos, Cloudflare Images, auth (51 tests)
+- [x] Backend: schema, caps, ordering, photos, Cloudflare Images, auth, page content (77 tests)
 - [x] Public pages: Home, About, Services, Gallery + gallery pages, Inquire; responsive, prerendered
-- [x] Admin UI (login, dashboard, galleries with photos and color, services, testimonials)
+- [x] Admin UI (login, dashboard, galleries with photos and color, services, testimonials, Home and About pages)
 - [x] Railway: Postgres + API deployed, real brief content seeded (services published, galleries as drafts)
 - [x] GitHub Pages: deploying from Actions, live at the project URL
 - [x] Cloudflare Images: keys on Railway, image sizes created, upload/resize/delete verified

@@ -5,6 +5,7 @@
 // on the tones, and app/lib/accent.ts owns them.
 export type { Accent } from '~/lib/accent'
 import type { Accent } from '~/lib/accent'
+import type { PageName, PageOverrides } from '~/lib/pages'
 
 export type Status = 'draft' | 'published'
 
@@ -68,6 +69,17 @@ export interface AdminTestimonial {
   status: Status
   created_at: string
   updated_at: string
+}
+
+/**
+ * A page's words and photos as the admin receives them. `content` holds only
+ * the fields she has changed; app/lib/pages.ts owns the originals for the rest.
+ */
+export interface AdminPage {
+  page: PageName
+  content: PageOverrides
+  /** Null until she first saves a change to the page. */
+  updated_at: string | null
 }
 
 export interface ListResponse<T> {

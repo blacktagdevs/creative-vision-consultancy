@@ -27,6 +27,8 @@ export default (async () => {
       route('services', 'routes/admin/services.tsx'),
       route('services/:id', 'routes/admin/service-edit.tsx'),
       route('testimonials', 'routes/admin/testimonials.tsx'),
+      route('pages', 'routes/admin/pages.tsx'),
+      route('pages/:page', 'routes/admin/page-edit.tsx'),
     ]),
   ]
 })() satisfies RouteConfig

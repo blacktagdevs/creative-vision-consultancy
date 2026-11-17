@@ -7,6 +7,7 @@ const TABS = [
   { to: '/admin/galleries', label: 'Galleries', end: false },
   { to: '/admin/services', label: 'Services', end: false },
   { to: '/admin/testimonials', label: 'Testimonials', end: false },
+  { to: '/admin/pages', label: 'Pages', end: false },
 ]
 
 type Props = {
