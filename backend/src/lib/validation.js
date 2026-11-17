@@ -2,6 +2,9 @@
 // its fields once (see FIELDS below) and the same description serves create,
 // where required fields must be present, and edit, where only the fields sent
 // are checked but a required one still can't be blanked.
+//
+// The Home and About pages' fields are listed in lib/pages.js. They are
+// described the same way and checked by the same rules, through checkField().
 export class ValidationError extends Error {
   constructor(message, status = 400) {
     super(message)
@@ -108,6 +111,14 @@ const TYPES = {
   },
 }
 
+/**
+ * One value against one field description ({ type, label, ... } as in FIELDS).
+ * Returns the cleaned value or throws a ValidationError worded for the owner.
+ */
+export function checkField(value, f, { allowInline = false } = {}) {
+  return TYPES[f.type](value, f, { allowInline })
+}
+
 const STATUS = { type: 'enum', label: 'Status', values: ['draft', 'published'] }
 
 export const FIELDS = {
@@ -160,7 +171,7 @@ export function validateFields(resource, body, { partial = false, allowInline = 
       if (f.required && !partial) throw new ValidationError(`${f.label} is required`)
       continue
     }
-    const value = TYPES[f.type](body[key], f, { allowInline })
+    const value = checkField(body[key], f, { allowInline })
     if (f.required && (value === null || value === '')) throw new ValidationError(`${f.label} is required`)
     out[key] = value
   }

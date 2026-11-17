@@ -1,11 +1,16 @@
 // Public read API. This is what the site's prerender reads at build time, so
 // it only ever returns published rows, in the order the owner arranged them.
+// The Home and About pages' wording has no draft state: what she saved is
+// what /pages/:page returns.
 import { Router } from 'express'
 import { query } from '../db.js'
 import { wrap } from '../lib/http.js'
+import { pageParam } from '../lib/pages.js'
 import { PHOTOS_SQL, portfolioListSql } from '../queries.js'
 
 export const publicRouter = Router()
+
+publicRouter.param('page', pageParam)
 
 // Drafts and housekeeping columns stay out of public responses.
 function publicService(s) {
@@ -43,4 +48,13 @@ publicRouter.get('/testimonials', wrap(async (_req, res) => {
      FROM testimonials WHERE status = 'published' ORDER BY sort_order, created_at`
   )
   res.json({ testimonials: rows })
+}))
+
+// GET /pages/home, /pages/about — only the fields the owner has changed. The
+// site holds the originals and lays these over them, so a page nobody has
+// edited is an empty object, not a 404.
+publicRouter.get('/pages/:page', wrap(async (req, res) => {
+  const { page } = req.params
+  const { rows } = await query('SELECT content FROM page_content WHERE page = $1', [page])
+  res.json({ page, content: rows[0]?.content ?? {} })
 }))

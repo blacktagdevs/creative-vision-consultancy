@@ -40,8 +40,8 @@ export const config = {
     magicLinkTemplateId: optional('LOOPS_MAGIC_LINK_TEMPLATE_ID'),
   },
 
-  // Cloudflare Images for service + portfolio photos (shared BlackTag account;
-  // CVC uploads are tagged project=cvc). Unset means uploads are refused in
+  // Cloudflare Images for service, portfolio and page photos (CVC's own
+  // account; uploads are still tagged project=cvc). Unset means uploads are refused in
   // production and kept inline only in local dev.
   images: {
     accountId: optional('CF_ACCOUNT_ID'),

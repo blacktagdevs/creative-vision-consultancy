@@ -1,8 +1,8 @@
-// Admin API for the three things the owner manages: services, portfolio
-// galleries and testimonials. They share one shape (list, create, edit, delete,
-// reorder, publish/unpublish), so the routes are generated from RESOURCES
-// rather than written out three times. Portfolio photos and uploads have their
-// own routes below.
+// Admin API for what the owner manages. Services, portfolio galleries and
+// testimonials share one shape (list, create, edit, delete, reorder,
+// publish/unpublish), so their routes are generated from RESOURCES rather than
+// written out three times. Portfolio photos, the Home and About pages' wording,
+// and uploads have their own routes below.
 //
 // Caps (LIMITS) are checked inside the create transaction under an advisory
 // lock, so two quick clicks on "Add" can't both squeeze past the limit.
@@ -16,6 +16,7 @@ import { LIMITS } from '../config.js'
 import { wrap } from '../lib/http.js'
 import { requireAdmin } from '../lib/auth.js'
 import { deleteImages, imagesConfigured, ourImageId, uploadImage } from '../lib/images.js'
+import { pageImages, pageParam, validatePageChanges } from '../lib/pages.js'
 import {
   ValidationError, slugify, uuidList, uuidParam, validateFields, validatePhoto,
 } from '../lib/validation.js'
@@ -26,6 +27,7 @@ export const adminRouter = Router()
 adminRouter.use(requireAdmin)
 adminRouter.param('id', uuidParam)
 adminRouter.param('photoId', uuidParam)
+adminRouter.param('page', pageParam)
 
 const RESOURCES = {
   services: { table: 'services', limit: LIMITS.services, slugFrom: 'name', noun: 'services', newAt: 'end' },
@@ -75,6 +77,11 @@ function insertSql(table, data) {
  * Delete the stored objects behind removed images, but only the ones nothing
  * points at any more. Call only after the delete has committed: objects can't
  * be rolled back, and a broken image on a surviving row is worse than a leak.
+ *
+ * Everywhere an image can be used has to be asked: gallery photos, services,
+ * and the Home and About pages. A page's content is one flat object, so each
+ * of its values is looked at. Leave a place out and removing a photo there
+ * would take it off a page that still shows it.
  */
 async function purgeUnreferencedImages(urls) {
   const candidates = [...new Set((urls || []).filter((u) => ourImageId(u)))]
@@ -82,7 +89,10 @@ async function purgeUnreferencedImages(urls) {
   const { rows } = await query(
     `SELECT image_url FROM portfolio_photos WHERE image_url = ANY($1::text[])
      UNION
-     SELECT image_url FROM services WHERE image_url = ANY($1::text[])`,
+     SELECT image_url FROM services WHERE image_url = ANY($1::text[])
+     UNION
+     SELECT field.value FROM page_content, jsonb_each_text(content) AS field
+     WHERE field.value = ANY($1::text[])`,
     [candidates]
   )
   const stillUsed = new Set(rows.map((r) => r.image_url))
@@ -321,15 +331,67 @@ adminRouter.patch('/portfolio/:id/photos/:photoId', wrap(async (req, res) => {
 }))
 
 // ---------------------------------------------------------------------------
+// Pages — the Home and About pages' words and photos
+// ---------------------------------------------------------------------------
+
+/** A page as the admin sees it. updated_at is null until its first save. */
+async function loadAdminPage(page) {
+  const { rows } = await query('SELECT content, updated_at FROM page_content WHERE page = $1', [page])
+  return { page, content: rows[0]?.content ?? {}, updated_at: rows[0]?.updated_at ?? null }
+}
+
+adminRouter.get('/pages/:page', wrap(async (req, res) => {
+  res.json(await loadAdminPage(req.params.page))
+}))
+
+// PATCH /admin/pages/:page { key: text, ... } — only the fields sent change.
+// Text is stored; null or blank removes the field, which puts the original
+// wording or photo back on the site.
+adminRouter.patch('/pages/:page', wrap(async (req, res) => {
+  const { page } = req.params
+  const { set, remove } = validatePageChanges(page, req.body, { allowInline: inlineAllowed() })
+  // Nothing of this page's in the body: leave it, and its saved time, alone.
+  if (Object.keys(set).length === 0 && remove.length === 0) return res.json(await loadAdminPage(page))
+
+  const { before, after } = await withTransaction(async (client) => {
+    // A page has no row until its first save, so make sure there is one to
+    // lock. The lock makes two saves of a page take turns: each merges into
+    // what the one before it stored, and `before` is exactly what this save
+    // replaced, which is what decides the photos to clean up below.
+    await client.query('INSERT INTO page_content (page) VALUES ($1) ON CONFLICT (page) DO NOTHING', [page])
+    const { rows: [before] } = await client.query(
+      'SELECT content FROM page_content WHERE page = $1 FOR UPDATE',
+      [page]
+    )
+    const { rows: [after] } = await client.query(
+      `UPDATE page_content SET content = (content - $2::text[]) || $3::jsonb, updated_at = now()
+       WHERE page = $1 RETURNING content, updated_at`,
+      [page, remove, JSON.stringify(set)]
+    )
+    return { before, after }
+  })
+
+  // Photos this save took off the page. They may still be on the other page,
+  // a service or a gallery, which purgeUnreferencedImages checks.
+  const kept = new Set(pageImages(page, after.content))
+  await purgeUnreferencedImages(pageImages(page, before.content).filter((url) => !kept.has(url)))
+  res.json({ page, content: after.content, updated_at: after.updated_at })
+}))
+
+// ---------------------------------------------------------------------------
 // Uploads
 // ---------------------------------------------------------------------------
+
+// Uploads are filed by where they are used; anything unrecognised goes with
+// the gallery photos, which is where most of them belong.
+const UPLOAD_KINDS = ['portfolio', 'services', 'pages']
 
 // POST /admin/upload { data, kind } — a base64 image data URI (already shrunk
 // in the browser) stored in Cloudflare Images, tagged project=cvc. 503 when it
 // isn't configured; the admin then keeps the data URI inline.
 adminRouter.post('/upload', wrap(async (req, res) => {
   if (!imagesConfigured()) return res.status(503).json({ error: 'Image storage is not configured' })
-  const folder = req.body?.kind === 'services' ? 'services' : 'portfolio'
+  const folder = UPLOAD_KINDS.includes(req.body?.kind) ? req.body.kind : 'portfolio'
   const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/i.exec(req.body?.data || '')
   if (!m) return res.status(400).json({ error: 'Expected a JPEG, PNG or WebP image' })
   const buffer = Buffer.from(m[2], 'base64')

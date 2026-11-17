@@ -1,5 +1,5 @@
-// Cloudflare Images: storage, resizing and delivery for service and portfolio
-// photos. Postgres keeps only each photo's delivery URL
+// Cloudflare Images: storage, resizing and delivery for service, portfolio and
+// Home/About page photos. Postgres keeps only each photo's delivery URL
 // (https://imagedelivery.net/<account hash>/<image id>/<variant>); the site
 // swaps the variant segment for the size it needs (see app/lib/image.ts).
 //

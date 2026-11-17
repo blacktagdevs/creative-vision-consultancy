@@ -54,7 +54,7 @@ export function admin(path, opts = {}) {
 
 /** Wipe every table between tests so cases can't leak into each other. */
 export async function resetDb() {
-  await query('TRUNCATE services, portfolio_photos, portfolio_items, testimonials, login_tokens CASCADE')
+  await query('TRUNCATE services, portfolio_photos, portfolio_items, testimonials, page_content, login_tokens CASCADE')
 }
 
 export function useServer() {
